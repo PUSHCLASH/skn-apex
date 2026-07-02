@@ -1,0 +1,14 @@
+flask
+flask-socketio
+flask-cors
+psycopg2-binary
+python-dotenv
+gunicorn
+requests
+PyJWT
+bcrypt
+qrcode
+reportlab
+pillow
+razorpay
+redis
