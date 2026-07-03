@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="subscriptions-container">
+    <h1>💎 Subscription Plans</h1>
+    <p class="subtitle">Save up to 62% on your fuel bill!</p>
+    
+    <div class="plans-grid">
+        <div class="plan-card">
+            <h3>Weekly</h3>
+            <div class="price">₹999</div>
+            <span class="period">per week</span>
+            <ul>
+                <li>✅ 2 fill-up credits</li>
+                <li>✅ Skip the queue</li>
+                <li>✅ Priority service</li>
+                <li>✅ Free soft drink</li>
+                <li>✅ Rollover unused credits</li>
+            </ul>
+            <button onclick="subscribe('weekly')" class="btn-primary">Subscribe</button>
+        </div>
+        
+        <div class="plan-card popular">
+            <span class="badge">Most Popular</span>
+            <h3>Monthly</h3>
+            <div class="price">₹2,999</div>
+            <span class="period">per month</span>
+            <ul>
+                <li>✅ 8 fill-up credits</li>
+                <li>✅ Skip the queue</li>
+                <li>✅ Priority service</li>
+                <li>✅ VIP badge on profile</li>
+                <li>✅ Free soft drink</li>
+                <li>✅ Rollover unused credits</li>
+            </ul>
+            <button onclick="subscribe('monthly')" class="btn-primary">Subscribe</button>
+        </div>
+        
+        <div class="plan-card">
+            <h3>3-Month</h3>
+            <div class="price">₹7,999</div>
+            <span class="period">per 3 months</span>
+            <ul>
+                <li>✅ 28 fill-up credits</li>
+                <li>✅ Skip the queue</li>
+                <li>✅ Priority service</li>
+                <li>✅ VIP badge on profile</li>
+                <li>✅ Free soft drink</li>
+                <li>✅ Free check-up</li>
+                <li>✅ Rollover unused credits</li>
+                <li>✅ 7-day money-back guarantee</li>
+            </ul>
+            <button onclick="subscribe('3month')" class="btn-primary">Subscribe</button>
+        </div>
+    </div>
+</div>
+
+<script>
+async function subscribe(planId) {
+    const token = localStorage.getItem('token');
+    if (!token) {
+        window.location.href = '/login';
+        return;
+    }
+    
+    const plans = {'weekly': 999, 'monthly': 2999, '3month': 7999};
+    
+    const response = await fetch('/api/create-order', {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ amount: plans[planId] })
+    });
+    
+    const result = await response.json();
+    if (result.order_id) {
+        const options = {
+            key: 'YOUR_RAZORPAY_KEY_ID',
+            amount: plans[planId] * 100,
+            currency: 'INR',
+            name: 'SKN APEX',
+            description: `${planId} subscription plan`,
+            order_id: result.order_id,
+            handler: async function(response) {
+                const subResponse = await fetch('/api/subscription/subscribe', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        plan_id: planId,
+                        payment_id: response.razorpay_payment_id
+                    })
+                });
+                const subResult = await subResponse.json();
+                if (subResult.status === 'success') {
+                    alert('Subscription activated! You have ' + subResult.credits + ' credits.');
+                    window.location.href = '/dashboard';
+                }
+            }
+        };
+        const rzp = new Razorpay(options);
+        rzp.open();
+    } else {
+        alert('Payment failed: ' + result.error);
+    }
+}
+</script>
+{% endblock %}
