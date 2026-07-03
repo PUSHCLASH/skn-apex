@@ -1,58 +1,32 @@
-{% extends "base.html" %}
-
-{% block content %}
-<div class="dashboard-container">
-    <div class="dashboard-header">
-        <h1>Welcome, {{ user.name }}!</h1>
-        <div class="star-rating" id="starDisplay"></div>
-    </div>
-    
-    <div class="dashboard-stats">
-        <div class="stat-card">
-            <span class="stat-icon">⏰</span>
-            <span class="stat-number" id="queueCount">0</span>
-            <span class="stat-label">Cars in Queue</span>
-        </div>
-        <div class="stat-card">
-            <span class="stat-icon">💳</span>
-            <span class="stat-number" id="creditCount">{{ user.credits or 0 }}</span>
-            <span class="stat-label">Available Credits</span>
-        </div>
-        <div class="stat-card">
-            <span class="stat-icon">⭐</span>
-            <span class="stat-number" id="starCount">0</span>
-            <span class="stat-label">Your Rating</span>
-        </div>
-    </div>
-    
-    <div class="quick-actions">
-        <a href="/queue" class="action-btn primary">Join Queue</a>
-        <a href="/payment" class="action-btn">Pay Now</a>
-        <a href="/subscriptions" class="action-btn">Subscribe</a>
-    </div>
-    
-    <div class="subscription-banner" id="subscriptionBanner" style="display: none;">
-        <p>💎 Get VIP treatment! <a href="/subscriptions">Subscribe now</a></p>
-    </div>
-</div>
-
 <script>
 document.addEventListener('DOMContentLoaded', async () => {
-    const response = await fetch('/api/queue/status');
-    const data = await response.json();
-    document.getElementById('queueCount').textContent = data.total || 0;
-    
     const token = localStorage.getItem('token');
-    const profileResponse = await fetch('/api/profile', {
-        headers: {'Authorization': `Bearer ${token}`}
-    });
-    const profile = await profileResponse.json();
-    document.getElementById('starCount').textContent = profile.star_rating || 0;
-    document.getElementById('starDisplay').innerHTML = '⭐'.repeat(profile.star_rating || 0);
-    
-    if (!profile.subscription_type) {
-        document.getElementById('subscriptionBanner').style.display = 'block';
+    if (!token) {
+        window.location.href = '/login';
+        return;
     }
+
+    // Fetch queue status
+    try {
+        const queueRes = await fetch('/api/queue/status');
+        const queueData = await queueRes.json();
+        document.getElementById('queueCount').textContent = queueData.total || 0;
+    } catch (e) {}
+
+    // Fetch profile
+    try {
+        const profileRes = await fetch('/api/profile', {
+            headers: {'Authorization': `Bearer ${token}`}
+        });
+        const profile = await profileRes.json();
+        if (profile.star_rating) {
+            document.getElementById('starCount').textContent = profile.star_rating;
+            document.getElementById('starDisplay').innerHTML = '⭐'.repeat(profile.star_rating);
+        }
+        document.getElementById('creditCount').textContent = profile.credits || 0;
+        if (!profile.subscription_type) {
+            document.getElementById('subscriptionBanner').style.display = 'block';
+        }
+    } catch (e) {}
 });
 </script>
-{% endblock %}
