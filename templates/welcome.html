@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="welcome-container">
+    <div class="hero-section">
+        <div class="hero-icon">🏔️</div>
+        <h1>SKN APEX</h1>
+        <p class="tagline">Fuel at Its Peak</p>
+        <p class="subtagline">Smart Fuel Management • Live Queue • Priority Service</p>
+        
+        <div class="hero-stats">
+            <div class="stat">
+                <span class="stat-number">500+</span>
+                <span class="stat-label">Cars Served</span>
+            </div>
+            <div class="stat">
+                <span class="stat-number">10+</span>
+                <span class="stat-label">Societies</span>
+            </div>
+            <div class="stat">
+                <span class="stat-number">4.8⭐</span>
+                <span class="stat-label">Rating</span>
+            </div>
+        </div>
+        
+        <div class="cta-buttons">
+            <a href="/register" class="btn-primary">Get Started</a>
+            <a href="/login" class="btn-secondary">Login</a>
+        </div>
+    </div>
+    
+    <div class="features-section">
+        <h2>Why SKN APEX?</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <span class="feature-icon">⏰</span>
+                <h3>Live Queue</h3>
+                <p>See wait time before you come</p>
+            </div>
+            <div class="feature-card">
+                <span class="feature-icon">📱</span>
+                <h3>Pre-Booking</h3>
+                <p>Book your slot in advance</p>
+            </div>
+            <div class="feature-card">
+                <span class="feature-icon">💎</span>
+                <h3>VIP Treatment</h3>
+                <p>Priority service, skip the queue</p>
+            </div>
+            <div class="feature-card">
+                <span class="feature-icon">💰</span>
+                <h3>Save 62%</h3>
+                <p>With subscription plans</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
