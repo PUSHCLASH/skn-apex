@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SKN APEX - Fuel at Its Peak</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <nav class="navbar">
+            <div class="nav-brand">🏔️ SKN APEX</div>
+            <div class="nav-links">
+                <a href="/dashboard">Dashboard</a>
+                <a href="/queue">Queue</a>
+                <a href="/profile">Profile</a>
+                <a href="/subscriptions">Subscribe</a>
+            </div>
+        </nav>
+        {% block content %}{% endblock %}
+    </div>
+    <script src="https://cdn.socket.io/4.5.0/socket.io.min.js"></script>
+    <script src="/static/js/main.js"></script>
+</body>
+</html>
