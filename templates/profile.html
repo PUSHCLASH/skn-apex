@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="profile-container">
+    <h1>👤 My Profile</h1>
+    
+    <div class="profile-card">
+        <div class="profile-header">
+            <div class="profile-avatar">🏔️</div>
+            <div class="profile-name">
+                <h2 id="profileName">{{ user.name }}</h2>
+                <p id="profileEmail">{{ user.email }}</p>
+            </div>
+        </div>
+        
+        <div class="profile-details">
+            <div class="detail-item">
+                <span class="label">Phone</span>
+                <span id="profilePhone">{{ user.phone }}</span>
+            </div>
+            <div class="detail-item">
+                <span class="label">Car Number</span>
+                <span id="profileCar">{{ user.car_number }}</span>
+            </div>
+            <div class="detail-item">
+                <span class="label">Car Model</span>
+                <span id="profileModel">{{ user.car_model or 'Not specified' }}</span>
+            </div>
+            <div class="detail-item">
+                <span class="label">Car Type</span>
+                <span id="profileType">{{ user.car_type }}</span>
+            </div>
+            <div class="detail-item">
+                <span class="label">Join Date</span>
+                <span id="profileJoin">{{ user.join_date }}</span>
+            </div>
+            <div class="detail-item">
+                <span class="label">Star Rating</span>
+                <span id="profileStars">⭐ <span id="starCount">0</span>/7</span>
+            </div>
+            <div class="detail-item">
+                <span class="label">Credits</span>
+                <span id="profileCredits">{{ user.credits or 0 }}</span>
+            </div>
+            <div class="detail-item">
+                <span class="label">Total Fill-ups</span>
+                <span id="profileFillups">{{ user.total_fillups or 0 }}</span>
+            </div>
+            <div class="detail-item">
+                <span class="label">VIP Status</span>
+                <span id="profileVip">{{ '✅ Active' if user.is_vip else '❌ Not Active' }}</span>
+            </div>
+        </div>
+        
+        <a href="/dashboard" class="btn-secondary" style="display: block; text-align: center; margin-top: 16px;">← Back to Dashboard</a>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+    const token = localStorage.getItem('token');
+    const response = await fetch('/api/profile', {
+        headers: {'Authorization': `Bearer ${token}`}
+    });
+    const data = await response.json();
+    
+    document.getElementById('profileName').textContent = data.name;
+    document.getElementById('profileEmail').textContent = data.email;
+    document.getElementById('profilePhone').textContent = data.phone;
+    document.getElementById('profileCar').textContent = data.car_number;
+    document.getElementById('profileModel').textContent = data.car_model || 'Not specified';
+    document.getElementById('profileType').textContent = data.car_type;
+    document.getElementById('profileJoin').textContent = data.join_date;
+    document.getElementById('starCount').textContent = data.star_rating || 0;
+    document.getElementById('profileCredits').textContent = data.credits || 0;
+    document.getElementById('profileFillups').textContent = data.total_fillups || 0;
+    document.getElementById('profileVip').textContent = data.is_vip ? '✅ Active' : '❌ Not Active';
+});
+</script>
+{% endblock %}
