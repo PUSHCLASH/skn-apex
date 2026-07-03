@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="queue-container">
+    <h1>Live Queue</h1>
+    
+    <div class="queue-status">
+        <div class="status-card">
+            <span class="label">Your Token</span>
+            <span class="value" id="userToken">-</span>
+        </div>
+        <div class="status-card">
+            <span class="label">Your Position</span>
+            <span class="value" id="userPosition">-</span>
+        </div>
+        <div class="status-card">
+            <span class="label">Est. Wait</span>
+            <span class="value" id="estWait">-</span>
+        </div>
+    </div>
+    
+    <button class="btn-primary" onclick="joinQueue()">Join Queue</button>
+    
+    <div class="queue-list">
+        <h3>Current Queue</h3>
+        <div id="queueList"></div>
+    </div>
+</div>
+
+<script>
+const socket = io();
+let token = localStorage.getItem('token');
+
+socket.on('queue_update', (data) => {
+    updateQueue(data);
+});
+
+async function joinQueue() {
+    const response = await fetch('/api/queue/join', {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        }
+    });
+    const result = await response.json();
+    if (result.status === 'success') {
+        document.getElementById('userToken').textContent = result.token;
+        document.getElementById('userPosition').textContent = result.position;
+        document.getElementById('estWait').textContent = result.estimated_wait + ' min';
+    } else {
+        alert(result.error);
+    }
+}
+
+function updateQueue(data) {
+    const list = document.getElementById('queueList');
+    list.innerHTML = '';
+    data.waiting.forEach((item, index) => {
+        const div = document.createElement('div');
+        div.className = 'queue-item';
+        div.innerHTML = `
+            <span class="position">#${index + 1}</span>
+            <span class="car">${item.car_number}</span>
+            <span class="status ${item.status}">${item.status}</span>
+        `;
+        list.appendChild(div);
+    });
+}
+
+setInterval(async () => {
+    const response = await fetch('/api/queue/status');
+    const data = await response.json();
+    updateQueue(data);
+}, 5000);
+</script>
+{% endblock %}
