@@ -56,17 +56,13 @@
 </div>
 
 <script>
-function getToken() {
-    return localStorage.getItem('token');
+const token = localStorage.getItem('token');
+
+if (!token) {
+    window.location.href = '/login';
 }
 
 async function subscribe(planId) {
-    const token = getToken();
-    if (!token) {
-        window.location.href = '/login';
-        return;
-    }
-
     try {
         const response = await fetch('/api/subscription/subscribe', {
             method: 'POST',
