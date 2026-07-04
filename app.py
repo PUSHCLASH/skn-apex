@@ -1,7 +1,6 @@
 import os
 import time
 import json
-import hashlib
 import jwt
 import bcrypt
 import qrcode
@@ -9,12 +8,11 @@ import base64
 from io import BytesIO
 from datetime import datetime, timedelta, timezone
 from functools import wraps
-from flask import Flask, request, jsonify, render_template, send_file, g
+from flask import Flask, request, jsonify, render_template, g
 from flask_cors import CORS
 import psycopg2
 import psycopg2.extras
 from threading import Lock
-import requests
 
 # ============================================
 # APP INITIALIZATION
@@ -45,7 +43,7 @@ def close_db(exception):
         db.close()
 
 # ============================================
-# JWT AUTHENTICATION
+# JWT AUTHENTICATION HELPERS
 # ============================================
 
 def generate_token(user_id):
@@ -124,7 +122,7 @@ def calculate_star_rating(user_data):
     return stars, reasons
 
 # ============================================
-# AUTH ROUTES
+# PAGE ROUTES (SERVING HTML)
 # ============================================
 
 @app.route('/')
@@ -165,12 +163,15 @@ def subscriptions_page(current_user):
     return render_template('subscriptions.html', user=current_user)
 
 # ============================================
-# API: REGISTER
+# API: REGISTER (POST)
 # ============================================
 
 @app.route('/api/register', methods=['POST'])
 def register():
     data = request.get_json()
+    if not data:
+        return jsonify({'error': 'Invalid JSON'}), 400
+
     name = data.get('name', '').strip()
     email = data.get('email', '').strip()
     phone = data.get('phone', '').strip()
@@ -217,12 +218,15 @@ def register():
     })
 
 # ============================================
-# API: LOGIN
+# API: LOGIN (POST)
 # ============================================
 
 @app.route('/api/login', methods=['POST'])
 def login():
     data = request.get_json()
+    if not data:
+        return jsonify({'error': 'Invalid JSON'}), 400
+
     email = data.get('email', '').strip()
     password = data.get('password', '')
 
@@ -259,7 +263,7 @@ def login():
     })
 
 # ============================================
-# API: PROFILE
+# API: PROFILE (GET)
 # ============================================
 
 @app.route('/api/profile', methods=['GET'])
@@ -286,7 +290,7 @@ def get_profile(current_user):
     })
 
 # ============================================
-# API: QUEUE SYSTEM (In-Memory)
+# QUEUE SYSTEM (In-Memory - for quick start)
 # ============================================
 
 active_queue = []
@@ -312,9 +316,8 @@ def join_queue(current_user):
             'joined_at': datetime.now(timezone.utc).isoformat(),
             'status': 'waiting'
         })
-    # Estimate wait (2 min per car)
     position = len([q for q in active_queue if q['status'] == 'waiting'])
-    estimated_wait = position * 2  # minutes
+    estimated_wait = position * 2
     return jsonify({
         'status': 'success',
         'token': token,
@@ -338,7 +341,6 @@ def get_queue_status():
 @app.route('/api/queue/next', methods=['POST'])
 @token_required
 def next_in_queue(current_user):
-    # Only admin/staff can advance queue
     if not current_user.get('is_admin') and not current_user.get('is_staff'):
         return jsonify({'error': 'Unauthorized'}), 403
     with queue_lock:
@@ -354,12 +356,13 @@ def complete_queue(current_user):
     if not current_user.get('is_admin') and not current_user.get('is_staff'):
         return jsonify({'error': 'Unauthorized'}), 403
     data = request.get_json()
+    if not data or 'token' not in data:
+        return jsonify({'error': 'Token required'}), 400
     token = data.get('token')
     with queue_lock:
         for q in active_queue:
             if q['token'] == token and q['status'] == 'serving':
                 q['status'] = 'completed'
-                # Update user fill-up count
                 cur = get_db().cursor()
                 cur.execute('UPDATE users SET total_fillups = total_fillups + 1 WHERE id = %s', (q['user_id'],))
                 get_db().commit()
@@ -367,7 +370,7 @@ def complete_queue(current_user):
     return jsonify({'error': 'Car not found or not serving'}), 404
 
 # ============================================
-# API: SUBSCRIPTION PLANS
+# SUBSCRIPTION PLANS (Pricing & Features)
 # ============================================
 
 PLANS = {
@@ -402,10 +405,13 @@ def get_plans():
 @token_required
 def subscribe(current_user):
     data = request.get_json()
+    if not data or 'plan_id' not in data:
+        return jsonify({'error': 'Plan ID required'}), 400
     plan_id = data.get('plan_id')
     if plan_id not in PLANS:
         return jsonify({'error': 'Invalid plan'}), 400
     plan = PLANS[plan_id]
+
     cur = get_db().cursor()
     cur.execute('''
         UPDATE users 
@@ -418,6 +424,7 @@ def subscribe(current_user):
     ''', (plan_id, datetime.now(timezone.utc) + timedelta(days=plan['days']), plan['credits'], current_user['id']))
     updated = cur.fetchone()
     get_db().commit()
+
     return jsonify({
         'status': 'success',
         'plan': plan_id,
@@ -426,15 +433,14 @@ def subscribe(current_user):
     })
 
 # ============================================
-# API: PAYMENT (UPI QR) - Just returns QR info
+# UPI PAYMENT INFO (GET)
 # ============================================
 
 @app.route('/api/payment/upi', methods=['GET'])
 @token_required
 def get_upi_info(current_user):
-    # Return UPI details (to be shown on payment page)
     return jsonify({
-        'upi_id': 'your-upi-id@bank',  # Replace with your actual UPI ID
+        'upi_id': 'your-upi-id@bank',
         'qr_code_url': '/static/images/upi-qr.png',
         'amount': request.args.get('amount', 0)
     })
@@ -448,7 +454,7 @@ def health():
     return jsonify({'status': 'ok'})
 
 # ============================================
-# START APP
+# START THE APP
 # ============================================
 
 if __name__ == '__main__':
