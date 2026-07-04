@@ -2,44 +2,42 @@
 
 {% block content %}
 <div class="subscriptions-container">
-    <h1>💎 Subscription Plans</h1>
-    <p class="subtitle">Save up to 62% on your fuel bill!</p>
+    <h1 style="font-size:1.4rem; margin-bottom:4px;">💎 Subscription Plans</h1>
+    <p style="color:#888; font-size:0.85rem; margin-bottom:16px;">Save up to 62% on your fuel bill!</p>
 
     <div class="plans-grid">
         <div class="plan-card">
             <h3>Weekly</h3>
             <div class="price">₹999</div>
-            <span class="period">per week</span>
+            <span class="period">per week • 33% savings</span>
             <ul>
                 <li>✅ 2 fill-up credits</li>
                 <li>✅ Skip the queue</li>
                 <li>✅ Priority service</li>
                 <li>✅ Free soft drink</li>
-                <li>✅ Rollover unused credits</li>
             </ul>
-            <button onclick="subscribe('weekly')" class="btn-primary">Subscribe</button>
+            <button onclick="subscribe('weekly')" class="btn-primary" style="width:100%;">Subscribe</button>
         </div>
 
         <div class="plan-card popular">
-            <span class="badge">Most Popular</span>
+            <span class="badge">🔥 Most Popular</span>
             <h3>Monthly</h3>
             <div class="price">₹2,999</div>
-            <span class="period">per month</span>
+            <span class="period">per month • 50% savings</span>
             <ul>
                 <li>✅ 8 fill-up credits</li>
                 <li>✅ Skip the queue</li>
                 <li>✅ Priority service</li>
                 <li>✅ VIP badge on profile</li>
                 <li>✅ Free soft drink</li>
-                <li>✅ Rollover unused credits</li>
             </ul>
-            <button onclick="subscribe('monthly')" class="btn-primary">Subscribe</button>
+            <button onclick="subscribe('monthly')" class="btn-primary" style="width:100%;">Subscribe</button>
         </div>
 
         <div class="plan-card">
             <h3>3-Month</h3>
             <div class="price">₹7,999</div>
-            <span class="period">per 3 months</span>
+            <span class="period">per 3 months • 62% savings</span>
             <ul>
                 <li>✅ 28 fill-up credits</li>
                 <li>✅ Skip the queue</li>
@@ -47,35 +45,29 @@
                 <li>✅ VIP badge on profile</li>
                 <li>✅ Free soft drink</li>
                 <li>✅ Free check-up</li>
-                <li>✅ Rollover unused credits</li>
-                <li>✅ 7-day money-back guarantee</li>
             </ul>
-            <button onclick="subscribe('3month')" class="btn-primary">Subscribe</button>
+            <button onclick="subscribe('3month')" class="btn-primary" style="width:100%;">Subscribe</button>
         </div>
+    </div>
+
+    <div style="margin-top:16px; background:rgba(255,215,0,0.05); border-radius:12px; padding:12px; border:1px solid rgba(255,215,0,0.1); text-align:center;">
+        <p style="color:#888; font-size:0.75rem;">📋 All subscriptions come with a 30-day money-back guarantee</p>
+        <p style="color:#aaa; font-size:0.7rem;">Your credits will be added immediately after payment</p>
     </div>
 </div>
 
 <script>
-const token = localStorage.getItem('token');
-
-if (!token) {
-    window.location.href = '/login';
-}
-
 async function subscribe(planId) {
     try {
         const response = await fetch('/api/subscription/subscribe', {
             method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json'
-            },
+            headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({ plan_id: planId })
         });
         const result = await response.json();
 
         if (result.status === 'success') {
-            alert('Subscription activated! You have ' + result.credits + ' credits.');
+            alert('✅ Subscription activated! You have ' + result.credits + ' credits.');
             window.location.href = '/dashboard';
         } else {
             alert(result.error || 'Subscription failed');
