@@ -3,10 +3,12 @@
 {% block content %}
 <div class="auth-container">
     <div class="auth-box">
-        <h1>🏔️ SKN APEX</h1>
+        <h1>⛽ SKN APEX</h1>
         <h2>Welcome Back</h2>
-        <div id="errorMessage" style="color:#ff4444; text-align:center; display:none;"></div>
-        <div id="successMessage" style="color:#00ff64; text-align:center; display:none;"></div>
+
+        <div id="errorMessage" style="color:#ff4444; text-align:center; margin-bottom:10px; display:none;"></div>
+        <div id="successMessage" style="color:#00ff64; text-align:center; margin-bottom:10px; display:none;"></div>
+
         <form id="loginForm">
             <div class="form-group">
                 <label>Email</label>
@@ -16,8 +18,9 @@
                 <label>Password</label>
                 <input type="password" id="password" placeholder="Enter your password" required>
             </div>
-            <button type="submit" class="btn-primary" id="loginBtn">Login</button>
+            <button type="submit" class="btn-primary" id="loginBtn" style="width:100%;">Login</button>
         </form>
+
         <p class="auth-link">Don't have an account? <a href="/register">Register</a></p>
     </div>
 </div>
@@ -26,13 +29,13 @@
 document.getElementById('loginForm').addEventListener('submit', async function(e) {
     e.preventDefault();
 
-    const email = document.getElementById('email').value.trim();
-    const password = document.getElementById('password').value;
-
     const errorDiv = document.getElementById('errorMessage');
     const successDiv = document.getElementById('successMessage');
     errorDiv.style.display = 'none';
     successDiv.style.display = 'none';
+
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
 
     if (!email || !password) {
         errorDiv.textContent = 'Email and password are required!';
@@ -54,8 +57,7 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
         const result = await response.json();
 
         if (result.status === 'success') {
-            // ✅ No token needed - session is set
-            successDiv.textContent = 'Login successful!';
+            successDiv.textContent = '✅ Login successful! Redirecting...';
             successDiv.style.display = 'block';
             setTimeout(() => {
                 window.location.href = '/dashboard';
