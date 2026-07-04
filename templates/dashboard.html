@@ -3,7 +3,10 @@
 {% block content %}
 <div class="dashboard-container">
     <div class="dashboard-header">
-        <h1>Welcome, {{ user.name }}!</h1>
+        <div>
+            <h1>Welcome, {{ user.name }}!</h1>
+            <p class="subtitle" style="color:#888; font-size:0.85rem;">{{ user.car_number }}</p>
+        </div>
         <div class="star-rating" id="starDisplay"></div>
     </div>
 
@@ -26,53 +29,61 @@
     </div>
 
     <div class="quick-actions">
-        <a href="/queue" class="action-btn primary">Join Queue</a>
-        <a href="/payment" class="action-btn">Pay Now</a>
-        <a href="/subscriptions" class="action-btn">Subscribe</a>
+        <a href="/queue" class="action-btn primary">⚡ Join Queue</a>
+        <a href="/payment" class="action-btn">💳 Pay Now</a>
+        <a href="/subscriptions" class="action-btn">💎 Subscribe</a>
+        <a href="/profile" class="action-btn">👤 Profile</a>
     </div>
 
-    <div class="subscription-banner" id="subscriptionBanner" style="display: none;">
-        <p>💎 Get VIP treatment! <a href="/subscriptions">Subscribe now</a></p>
+    <div class="subscription-banner" id="subscriptionBanner" style="display: none; background: rgba(255,215,0,0.08); border: 1px solid rgba(255,215,0,0.2); border-radius: 12px; padding: 14px; text-align: center; margin-top: 16px;">
+        <p style="color:#FFD700;">💎 Get VIP treatment! <a href="/subscriptions" style="color:#fff; font-weight:700;">Subscribe now</a></p>
+    </div>
+
+    <!-- Live Updates -->
+    <div class="live-updates" style="margin-top: 16px; background: rgba(255,255,255,0.03); border-radius: 12px; padding: 14px; border: 1px solid rgba(255,255,255,0.05);">
+        <h3 style="font-size:0.9rem; color:#aaa; margin-bottom:8px;">📡 Live Updates</h3>
+        <div style="display:flex; flex-direction:column; gap:4px; font-size:0.8rem; color:#888;">
+            <p>💧 Water: Normal supply today</p>
+            <p>⛽ DG Fuel: 60% (Healthy)</p>
+            <p>🔌 Electricity: Stable</p>
+            <p>📢 Festival offer: 10% off on Sunday</p>
+        </div>
+    </div>
+
+    <!-- AI Assistant -->
+    <div style="margin-top: 16px; background: rgba(255,215,0,0.05); border-radius: 12px; padding: 14px; border: 1px solid rgba(255,215,0,0.1);">
+        <p style="color:#FFD700; font-size:0.85rem;">🤖 <strong>AI Assistant:</strong> <span id="aiMessage">Ready to fuel up? You have {{ user.credits or 0 }} credits!</span></p>
     </div>
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const token = localStorage.getItem('token');
-
-    if (!token) {
-        window.location.href = '/login';
-        return;
-    }
-
+document.addEventListener('DOMContentLoaded', async function() {
     // Load queue status
-    fetch('/api/queue/status')
-        .then(res => res.json())
-        .then(data => {
-            document.getElementById('queueCount').textContent = data.total || 0;
-        })
-        .catch(err => console.log('Queue load error:', err));
+    try {
+        const response = await fetch('/api/queue/status');
+        const data = await response.json();
+        document.getElementById('queueCount').textContent = data.total || 0;
+    } catch(e) {}
 
     // Load profile
-    fetch('/api/profile', {
-        headers: {
-            'Authorization': `Bearer ${token}`
-        }
-    })
-    .then(res => res.json())
-    .then(data => {
+    try {
+        const response = await fetch('/api/profile');
+        const data = await response.json();
         if (data.star_rating) {
             document.getElementById('starCount').textContent = data.star_rating;
             document.getElementById('starDisplay').innerHTML = '⭐'.repeat(data.star_rating);
         }
-        if (data.credits !== undefined) {
-            document.getElementById('creditCount').textContent = data.credits;
-        }
+        document.getElementById('creditCount').textContent = data.credits || 0;
         if (!data.subscription_type) {
             document.getElementById('subscriptionBanner').style.display = 'block';
         }
-    })
-    .catch(err => console.log('Profile load error:', err));
+        // Update AI message based on credits
+        if (data.credits > 0) {
+            document.getElementById('aiMessage').textContent = `You have ${data.credits} credits! Ready to fuel up? 🚀`;
+        } else {
+            document.getElementById('aiMessage').textContent = 'You have 0 credits. Subscribe to get priority service! 💎';
+        }
+    } catch(e) {}
 });
 </script>
 {% endblock %}
