@@ -7,22 +7,70 @@
     <link rel="stylesheet" href="/static/css/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 </head>
 <body>
     <div class="app-container">
         <nav class="navbar">
             <div class="nav-brand">🏔️ SKN APEX</div>
-            <div class="nav-links">
+            <div class="nav-links" id="navLinks">
                 <a href="/dashboard">Dashboard</a>
                 <a href="/queue">Queue</a>
                 <a href="/profile">Profile</a>
                 <a href="/subscriptions">Subscribe</a>
+                <a href="#" onclick="logout()" style="color:#ff4444;">Logout</a>
             </div>
         </nav>
         {% block content %}{% endblock %}
     </div>
-    <script src="https://cdn.socket.io/4.5.0/socket.io.min.js"></script>
-    <script src="/static/js/main.js"></script>
+    <script>
+        // ============================================
+        // GLOBAL FUNCTIONS
+        // ============================================
+
+        function getToken() {
+            return localStorage.getItem('token');
+        }
+
+        function logout() {
+            localStorage.removeItem('token');
+            window.location.href = '/';
+        }
+
+        function isLoggedIn() {
+            return !!getToken();
+        }
+
+        // Auto-redirect to login if not logged in (except on welcome, login, register pages)
+        const publicPages = ['/', '/login', '/register'];
+        if (!publicPages.includes(window.location.pathname)) {
+            if (!isLoggedIn()) {
+                window.location.href = '/login';
+            }
+        }
+
+        // ============================================
+        // API HELPER
+        // ============================================
+
+        async function apiCall(method, endpoint, data = null) {
+            const options = {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            };
+            const token = getToken();
+            if (token) {
+                options.headers['Authorization'] = `Bearer ${token}`;
+            }
+            if (data) {
+                options.body = JSON.stringify(data);
+            }
+            const response = await fetch(endpoint, options);
+            return await response.json();
+        }
+
+        console.log('SKN APEX loaded successfully');
+    </script>
 </body>
 </html>
