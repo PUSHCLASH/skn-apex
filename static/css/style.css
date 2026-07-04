@@ -544,3 +544,266 @@ h1 {
         grid-template-columns: 1fr 1fr;
     }
 }
+/* ============================================
+   CEO BADGE - PREMIUM STYLING
+   ============================================ */
+
+.ceo-badge {
+    position: fixed;
+    top: 15px;
+    right: 15px;
+    z-index: 9999;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    animation: ceoPulse 2s ease-in-out infinite;
+    transition: transform 0.3s ease;
+}
+
+.ceo-badge:hover {
+    transform: scale(1.05);
+}
+
+.ceo-avatar {
+    width: 65px;
+    height: 65px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #FFD700;
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.4), 0 0 40px rgba(255, 215, 0, 0.2);
+    transition: all 0.3s ease;
+}
+
+.ceo-avatar:hover {
+    box-shadow: 0 0 30px rgba(255, 215, 0, 0.6), 0 0 60px rgba(255, 215, 0, 0.3);
+}
+
+.ceo-label {
+    font-size: 0.6rem;
+    color: #ddd;
+    margin-top: 4px;
+    background: rgba(0, 0, 0, 0.85);
+    padding: 2px 10px;
+    border-radius: 12px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    border: 1px solid rgba(255, 215, 0, 0.3);
+    backdrop-filter: blur(10px);
+}
+
+@keyframes ceoPulse {
+    0%, 100% {
+        box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+    }
+    50% {
+        box-shadow: 0 0 40px rgba(255, 215, 0, 0.5), 0 0 60px rgba(255, 215, 0, 0.2);
+    }
+}
+
+/* ============================================
+   CEO MODAL - PREMIUM
+   ============================================ */
+
+.ceo-modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(15px);
+    z-index: 10000;
+    justify-content: center;
+    align-items: center;
+}
+
+.ceo-modal-content {
+    background: linear-gradient(145deg, #1a1a2e, #16213e);
+    border-radius: 28px;
+    padding: 35px 30px;
+    max-width: 380px;
+    width: 90%;
+    text-align: center;
+    border: 1px solid rgba(255, 215, 0, 0.2);
+    box-shadow: 0 0 80px rgba(255, 215, 0, 0.15);
+    animation: modalSlideIn 0.5s ease;
+}
+
+@keyframes modalSlideIn {
+    0% {
+        opacity: 0;
+        transform: translateY(40px) scale(0.95);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.ceo-modal-avatar {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid #FFD700;
+    margin-bottom: 12px;
+    box-shadow: 0 0 40px rgba(255, 215, 0, 0.2);
+}
+
+.ceo-modal-header h2 {
+    font-size: 2rem;
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin: 4px 0;
+    font-weight: 800;
+    letter-spacing: 1px;
+}
+
+.ceo-title {
+    color: #FFD700;
+    font-weight: 600;
+    font-size: 0.85rem;
+    letter-spacing: 3px;
+    margin-bottom: 16px;
+    text-transform: uppercase;
+}
+
+.ceo-modal-body p {
+    color: #ccc;
+    font-size: 1rem;
+    margin: 10px 0;
+}
+
+.ceo-modal-body p strong {
+    color: #fff;
+}
+
+.whatsapp-btn {
+    display: inline-block;
+    margin-top: 16px;
+    background: #25D366;
+    color: #fff;
+    padding: 14px 28px;
+    border-radius: 30px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 1rem;
+    box-shadow: 0 0 30px rgba(37, 211, 102, 0.4);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.whatsapp-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 50px rgba(37, 211, 102, 0.6);
+}
+
+.close-btn {
+    margin-top: 18px;
+    background: transparent;
+    border: 1px solid #555;
+    color: #aaa;
+    padding: 10px 32px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.close-btn:hover {
+    border-color: #FFD700;
+    color: #FFD700;
+    background: rgba(255, 215, 0, 0.05);
+}
+
+/* ============================================
+   ADMIN BUTTON
+   ============================================ */
+
+.admin-btn {
+    position: fixed;
+    top: 80px;
+    right: 15px;
+    z-index: 9998;
+    background: rgba(255, 215, 0, 0.08);
+    border: 1px solid rgba(255, 215, 0, 0.2);
+    color: #FFD700;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    letter-spacing: 0.5px;
+}
+
+.admin-btn:hover {
+    background: rgba(255, 215, 0, 0.15);
+    border-color: rgba(255, 215, 0, 0.5);
+    transform: scale(1.05);
+}
+
+/* ============================================
+   PREMIUM THEME - OVERRIDES
+   ============================================ */
+
+body {
+    background: #0a0a1a;
+    color: #fff;
+}
+
+.app-container {
+    background: linear-gradient(145deg, #0f0f23, #1a1a2e);
+    border: 1px solid rgba(255, 215, 0, 0.08);
+    box-shadow: 0 0 60px rgba(255, 215, 0, 0.03);
+}
+
+.navbar {
+    border-bottom: 1px solid rgba(255, 215, 0, 0.08);
+}
+
+.nav-brand {
+    color: #FFD700;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+}
+
+.nav-links a {
+    color: #aaa;
+    transition: color 0.3s ease;
+    font-weight: 500;
+}
+
+.nav-links a:hover {
+    color: #FFD700;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #FFD700, #F4A900);
+    color: #0a0a1a;
+    font-weight: 700;
+}
+
+.btn-primary:hover {
+    transform: scale(1.02);
+}
+
+.btn-secondary {
+    border-color: #FFD700;
+    color: #FFD700;
+    font-weight: 600;
+}
+
+.btn-secondary:hover {
+    background: rgba(255, 215, 0, 0.08);
+}
+
+.auth-box {
+    background: linear-gradient(145deg, #141430, #1a1a3e);
+    border: 1px solid rgba(255, 215, 0, 0.08);
+}
