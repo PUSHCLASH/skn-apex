@@ -2,36 +2,37 @@
 
 {% block content %}
 <div class="welcome-container">
-    <div class="hero-section">
-        <div class="hero-icon">🏔️</div>
-        <h1>SKN APEX</h1>
-        <p class="tagline">Fuel at Its Peak</p>
-        <p class="subtagline">Smart Fuel Management • Live Queue • Priority Service</p>
+    <div class="welcome-hero">
+        <!-- WebApp Logo -->
+        <img src="/static/images/webapp-logo.png" alt="SKN APEX" class="webapp-logo">
         
-        <div class="hero-stats">
-            <div class="stat">
+        <h1 class="welcome-title">SKN APEX</h1>
+        <p class="welcome-tagline">Fuel at Its Peak</p>
+        <p class="welcome-sub">Smart Fuel Management • Live Queue • Priority Service</p>
+
+        <div class="welcome-stats">
+            <div class="stat-item">
                 <span class="stat-number">500+</span>
                 <span class="stat-label">Cars Served</span>
             </div>
-            <div class="stat">
+            <div class="stat-item">
                 <span class="stat-number">10+</span>
                 <span class="stat-label">Societies</span>
             </div>
-            <div class="stat">
+            <div class="stat-item">
                 <span class="stat-number">4.8⭐</span>
                 <span class="stat-label">Rating</span>
             </div>
         </div>
-        
-        <div class="cta-buttons">
-            <a href="/register" class="btn-primary">Get Started</a>
-            <a href="/login" class="btn-secondary">Login</a>
+
+        <div class="welcome-actions">
+            <a href="/register" class="btn-primary">🚀 Get Started</a>
+            <a href="/login" class="btn-secondary">🔑 Login</a>
         </div>
     </div>
-    
-    <div class="features-section">
-        <h2>Why SKN APEX?</h2>
-        <div class="features-grid">
+
+    <div class="welcome-features">
+        <div class="feature-grid">
             <div class="feature-card">
                 <span class="feature-icon">⏰</span>
                 <h3>Live Queue</h3>
@@ -55,4 +56,169 @@
         </div>
     </div>
 </div>
+
+<style>
+    .welcome-container {
+        padding: 20px 0;
+        text-align: center;
+    }
+
+    .welcome-hero {
+        padding: 20px 20px 30px;
+    }
+
+    .webapp-logo {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid #FFD700;
+        box-shadow: 0 0 40px rgba(255, 215, 0, 0.3);
+        margin-bottom: 16px;
+        animation: logoFloat 3s ease-in-out infinite;
+    }
+
+    @keyframes logoFloat {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-10px); }
+    }
+
+    .welcome-title {
+        font-size: 3.2rem;
+        background: linear-gradient(135deg, #FFD700, #FFA500);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-weight: 900;
+        margin: 0;
+        letter-spacing: 2px;
+    }
+
+    .welcome-tagline {
+        font-size: 1.4rem;
+        color: #FFD700;
+        font-weight: 600;
+        margin: 4px 0;
+    }
+
+    .welcome-sub {
+        color: #aaa;
+        font-size: 0.95rem;
+        margin-top: 4px;
+    }
+
+    .welcome-stats {
+        display: flex;
+        justify-content: center;
+        gap: 30px;
+        margin: 30px 0;
+    }
+
+    .stat-item {
+        text-align: center;
+    }
+
+    .stat-number {
+        display: block;
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #FFD700;
+    }
+
+    .stat-label {
+        font-size: 0.8rem;
+        color: #888;
+    }
+
+    .welcome-actions {
+        display: flex;
+        gap: 12px;
+        justify-content: center;
+        margin-top: 20px;
+        flex-wrap: wrap;
+    }
+
+    .welcome-actions .btn-primary,
+    .welcome-actions .btn-secondary {
+        padding: 14px 32px;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 1rem;
+        text-decoration: none;
+        display: inline-block;
+        transition: transform 0.2s ease;
+    }
+
+    .welcome-actions .btn-primary {
+        background: linear-gradient(135deg, #FFD700, #FFA500);
+        color: #0a0a1a;
+    }
+
+    .welcome-actions .btn-secondary {
+        background: transparent;
+        color: #FFD700;
+        border: 1px solid #FFD700;
+    }
+
+    .welcome-actions .btn-primary:hover,
+    .welcome-actions .btn-secondary:hover {
+        transform: scale(1.05);
+    }
+
+    .welcome-features {
+        margin-top: 30px;
+    }
+
+    .feature-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+    }
+
+    .feature-card {
+        background: rgba(255, 215, 0, 0.05);
+        border: 1px solid rgba(255, 215, 0, 0.1);
+        border-radius: 12px;
+        padding: 16px;
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+
+    .feature-card:hover {
+        transform: translateY(-3px);
+        border-color: rgba(255, 215, 0, 0.3);
+        box-shadow: 0 0 30px rgba(255, 215, 0, 0.05);
+    }
+
+    .feature-icon {
+        font-size: 2rem;
+    }
+
+    .feature-card h3 {
+        font-size: 0.95rem;
+        color: #FFD700;
+        margin: 6px 0 2px;
+    }
+
+    .feature-card p {
+        font-size: 0.8rem;
+        color: #888;
+        margin: 0;
+    }
+
+    @media (max-width: 400px) {
+        .welcome-title {
+            font-size: 2.4rem;
+        }
+        .welcome-stats {
+            gap: 16px;
+        }
+        .feature-grid {
+            grid-template-columns: 1fr 1fr;
+        }
+        .webapp-logo {
+            width: 80px;
+            height: 80px;
+        }
+    }
+</style>
 {% endblock %}
