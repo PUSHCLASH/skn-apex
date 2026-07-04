@@ -3,27 +3,27 @@
 {% block content %}
 <div class="payment-container">
     <h1>💳 Pay Now</h1>
-    
+
     <div class="payment-box">
         <div class="payment-summary">
             <p><strong>Car Number:</strong> {{ user.car_number }}</p>
             <p><strong>Current Price:</strong> ₹83/kg</p>
         </div>
-        
+
         <div class="form-group">
             <label>CNG Quantity (kg)</label>
             <input type="number" id="quantity" value="8.5" min="1" step="0.5">
         </div>
-        
+
         <div class="payment-result">
             <p><strong>Total Amount:</strong> ₹<span id="totalAmount">705.50</span></p>
         </div>
-        
+
         <div class="payment-methods">
             <button onclick="payNow('online')" class="btn-primary">Pay Online</button>
             <button onclick="payNow('cash')" class="btn-secondary">Cash at Pump</button>
         </div>
-        
+
         <div id="qrContainer" style="margin-top: 20px; text-align: center;">
             <p>📱 Scan to Pay via UPI</p>
             <img src="/static/images/upi-qr.png" alt="UPI QR Code" id="qrImage" style="max-width: 200px; border-radius: 12px; margin-top: 8px;">
@@ -38,40 +38,14 @@ document.getElementById('quantity').addEventListener('input', function() {
     document.getElementById('totalAmount').textContent = total.toFixed(2);
 });
 
-async function payNow(method) {
+function payNow(method) {
     const quantity = document.getElementById('quantity').value;
     const amount = quantity * 83;
-    
+
     if (method === 'online') {
-        const token = localStorage.getItem('token');
-        const response = await fetch('/api/create-order', {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ amount: amount })
-        });
-        
-        const result = await response.json();
-        if (result.order_id) {
-            const options = {
-                key: 'YOUR_RAZORPAY_KEY_ID',
-                amount: amount * 100,
-                currency: 'INR',
-                name: 'SKN APEX',
-                description: 'CNG Fill-up',
-                order_id: result.order_id,
-                handler: function(response) {
-                    alert('Payment successful! Receipt sent to WhatsApp.');
-                    window.location.href = '/dashboard';
-                }
-            };
-            const rzp = new Razorpay(options);
-            rzp.open();
-        }
+        alert('📱 Please scan the UPI QR code above and pay ₹' + amount.toFixed(2));
     } else {
-        alert('Pay at pump. You will receive a receipt.');
+        alert('💰 Pay at pump. You will receive a receipt.');
     }
 }
 </script>
