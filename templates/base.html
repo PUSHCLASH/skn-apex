@@ -6,13 +6,44 @@
     <title>SKN APEX - Fuel at Its Peak</title>
     <link rel="stylesheet" href="/static/css/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 </head>
 <body>
+    <!-- CEO Badge - Top Right Corner -->
+    <div class="ceo-badge" onclick="openCEOModal()">
+        <img src="/static/images/ceo-logo.png" alt="CEO" class="ceo-avatar">
+        <span class="ceo-label">CEO of App</span>
+    </div>
+
+    <!-- CEO Modal -->
+    <div id="ceoModal" class="ceo-modal-overlay" onclick="closeCEOModal()">
+        <div class="ceo-modal-content" onclick="event.stopPropagation()">
+            <div class="ceo-modal-header">
+                <img src="/static/images/ceo-logo.png" alt="CEO" class="ceo-modal-avatar">
+                <h2>KAUSHTUBH</h2>
+                <p class="ceo-title">CEO OF SKN APEX</p>
+            </div>
+            <div class="ceo-modal-body">
+                <p>📞 <strong>Phone:</strong> 8950592855</p>
+                <p>💬 <strong>Have a query?</strong> Get in touch!</p>
+                <a href="https://wa.me/918950592855?text=Hey%20Kaushtubh%2C%20I%20have%20a%20query%20about%20SKN%20APEX" target="_blank" class="whatsapp-btn">
+                    📱 Message on WhatsApp
+                </a>
+            </div>
+            <div class="ceo-modal-footer">
+                <button onclick="closeCEOModal()" class="close-btn">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Button - Top Right Corner -->
+    <a href="/admin-login" class="admin-btn">🔐 Admin</a>
+
+    <!-- Main App Container -->
     <div class="app-container">
         <nav class="navbar">
-            <div class="nav-brand">🏔️ SKN APEX</div>
-            <div class="nav-links" id="navLinks">
+            <div class="nav-brand">⛽ SKN APEX</div>
+            <div class="nav-links">
                 <a href="/dashboard">Dashboard</a>
                 <a href="/queue">Queue</a>
                 <a href="/profile">Profile</a>
@@ -24,9 +55,23 @@
     </div>
 
     <script>
-        // Simple check: if on protected page and not logged in, redirect to login
-        // (The backend will also redirect, but this is for UX)
-        console.log('SKN APEX loaded');
+        // CEO Modal Functions
+        function openCEOModal() {
+            document.getElementById('ceoModal').style.display = 'flex';
+        }
+
+        function closeCEOModal() {
+            document.getElementById('ceoModal').style.display = 'none';
+        }
+
+        // Close modal on Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeCEOModal();
+            }
+        });
+
+        console.log('✅ SKN APEX loaded with CEO Badge');
     </script>
 </body>
 </html>
