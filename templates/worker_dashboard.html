@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Worker Dashboard - SKN APEX</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="app-container">
+        <nav class="navbar">
+            <div class="nav-brand">⛽ SKN APEX</div>
+            <div class="nav-links">
+                <a href="/worker-dashboard">Dashboard</a>
+                <a href="/logout" style="color:#ff4444;">Logout</a>
+            </div>
+        </nav>
+
+        <div style="text-align:center; padding:20px 0;">
+            <h1 style="font-size:2rem; color:#FFD700;">👨‍🔧 Worker Dashboard</h1>
+            <p style="color:#888; margin-bottom:20px;">Welcome, Worker! Manage your shift and performance.</p>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                <div style="background:rgba(255,255,255,0.03); border-radius:12px; padding:16px; border:1px solid rgba(255,215,0,0.1);">
+                    <span style="font-size:2rem; display:block;">📅</span>
+                    <span style="color:#FFD700; font-weight:700; font-size:1.2rem;">Today's Shift</span>
+                    <p style="color:#888; font-size:0.8rem;">6 AM - 2 PM</p>
+                </div>
+                <div style="background:rgba(255,255,255,0.03); border-radius:12px; padding:16px; border:1px solid rgba(255,215,0,0.1);">
+                    <span style="font-size:2rem; display:block;">⭐</span>
+                    <span style="color:#FFD700; font-weight:700; font-size:1.2rem;">Your Rating</span>
+                    <p style="color:#888; font-size:0.8rem;">⭐⭐⭐⭐ (4 Stars)</p>
+                </div>
+                <div style="background:rgba(255,255,255,0.03); border-radius:12px; padding:16px; border:1px solid rgba(255,215,0,0.1);">
+                    <span style="font-size:2rem; display:block;">🚗</span>
+                    <span style="color:#FFD700; font-weight:700; font-size:1.2rem;">Cars Served</span>
+                    <p style="color:#888; font-size:0.8rem;">45 Today</p>
+                </div>
+                <div style="background:rgba(255,255,255,0.03); border-radius:12px; padding:16px; border:1px solid rgba(255,215,0,0.1);">
+                    <span style="font-size:2rem; display:block;">⏳</span>
+                    <span style="color:#FFD700; font-weight:700; font-size:1.2rem;">Queue</span>
+                    <p style="color:#888; font-size:0.8rem;">12 Waiting</p>
+                </div>
+            </div>
+
+            <div style="margin-top:20px; background:rgba(255,215,0,0.05); border-radius:12px; padding:14px; border:1px solid rgba(255,215,0,0.1);">
+                <p style="color:#888; font-size:0.8rem;">📋 Update your profile to get AI star ranking based on your experience!</p>
+                <a href="/profile" class="btn-secondary" style="display:inline-block; margin-top:8px; padding:8px 20px; text-decoration:none;">Update Profile</a>
+            </div>
+
+            <a href="/" class="btn-secondary" style="display:block; margin-top:20px; text-decoration:none; padding:12px;">← Back to Home</a>
+        </div>
+    </div>
+</body>
+</html>
