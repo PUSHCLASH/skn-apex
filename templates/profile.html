@@ -3,7 +3,7 @@
 {% block content %}
 <div class="profile-container">
     <h1>👤 My Profile</h1>
-    
+
     <div class="profile-card">
         <div class="profile-header">
             <div class="profile-avatar">🏔️</div>
@@ -12,7 +12,7 @@
                 <p id="profileEmail">{{ user.email }}</p>
             </div>
         </div>
-        
+
         <div class="profile-details">
             <div class="detail-item">
                 <span class="label">Phone</span>
@@ -51,30 +51,30 @@
                 <span id="profileVip">{{ '✅ Active' if user.is_vip else '❌ Not Active' }}</span>
             </div>
         </div>
-        
+
         <a href="/dashboard" class="btn-secondary" style="display: block; text-align: center; margin-top: 16px;">← Back to Dashboard</a>
     </div>
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', async () => {
+document.addEventListener('DOMContentLoaded', function() {
     const token = localStorage.getItem('token');
-    const response = await fetch('/api/profile', {
+    if (!token) {
+        window.location.href = '/login';
+        return;
+    }
+
+    fetch('/api/profile', {
         headers: {'Authorization': `Bearer ${token}`}
-    });
-    const data = await response.json();
-    
-    document.getElementById('profileName').textContent = data.name;
-    document.getElementById('profileEmail').textContent = data.email;
-    document.getElementById('profilePhone').textContent = data.phone;
-    document.getElementById('profileCar').textContent = data.car_number;
-    document.getElementById('profileModel').textContent = data.car_model || 'Not specified';
-    document.getElementById('profileType').textContent = data.car_type;
-    document.getElementById('profileJoin').textContent = data.join_date;
-    document.getElementById('starCount').textContent = data.star_rating || 0;
-    document.getElementById('profileCredits').textContent = data.credits || 0;
-    document.getElementById('profileFillups').textContent = data.total_fillups || 0;
-    document.getElementById('profileVip').textContent = data.is_vip ? '✅ Active' : '❌ Not Active';
+    })
+    .then(res => res.json())
+    .then(data => {
+        document.getElementById('starCount').textContent = data.star_rating || 0;
+        document.getElementById('profileCredits').textContent = data.credits || 0;
+        document.getElementById('profileFillups').textContent = data.total_fillups || 0;
+        document.getElementById('profileVip').textContent = data.is_vip ? '✅ Active' : '❌ Not Active';
+    })
+    .catch(() => {});
 });
 </script>
 {% endblock %}
