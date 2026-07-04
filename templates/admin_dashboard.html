@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard - SKN APEX</title>
     <link rel="stylesheet" href="/static/css/style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="admin-container">
@@ -13,53 +12,47 @@
             <div class="nav-brand">⛽ SKN APEX Admin</div>
             <div class="nav-links">
                 <a href="/admin-dashboard">Dashboard</a>
-                <a href="/logout">Logout</a>
+                <a href="/logout" style="color:#ff4444;">Logout</a>
             </div>
         </nav>
 
         <div class="admin-dashboard">
-            <h1>📊 Admin Dashboard</h1>
-            <p class="subtitle">Welcome back, Admin!</p>
+            <h1 style="font-size:1.8rem; color:#FFD700; margin-bottom:4px;">📊 Admin Dashboard</h1>
+            <p style="color:#888; margin-bottom:20px;">Welcome back, Admin!</p>
 
             <div class="admin-stats-grid">
                 <div class="admin-stat-card">
-                    <span class="stat-icon">👥</span>
+                    <span class="stat-icon" style="font-size:2rem; display:block;">👥</span>
                     <span class="stat-number">{{ total_users }}</span>
                     <span class="stat-label">Total Users</span>
                 </div>
                 <div class="admin-stat-card">
-                    <span class="stat-icon">⛽</span>
+                    <span class="stat-icon" style="font-size:2rem; display:block;">⛽</span>
                     <span class="stat-number">{{ total_fillups }}</span>
                     <span class="stat-label">Total Fill-ups</span>
                 </div>
                 <div class="admin-stat-card">
-                    <span class="stat-icon">👑</span>
+                    <span class="stat-icon" style="font-size:2rem; display:block;">👑</span>
                     <span class="stat-number">{{ vip_users }}</span>
                     <span class="stat-label">VIP Users</span>
                 </div>
                 <div class="admin-stat-card">
-                    <span class="stat-icon">📈</span>
+                    <span class="stat-icon" style="font-size:2rem; display:block;">📈</span>
                     <span class="stat-number">{{ subscriptions|length }}</span>
                     <span class="stat-label">Active Plans</span>
                 </div>
             </div>
 
             <div class="admin-section">
-                <h2>📋 Subscription Breakdown</h2>
+                <h2 style="color:#aaa; font-size:1rem; margin-bottom:12px;">📋 Subscription Breakdown</h2>
                 <div class="admin-table">
                     <table>
                         <thead>
-                            <tr>
-                                <th>Plan</th>
-                                <th>Users</th>
-                            </tr>
+                            <tr><th>Plan</th><th>Users</th></tr>
                         </thead>
                         <tbody>
                             {% for sub in subscriptions %}
-                            <tr>
-                                <td>{{ sub.subscription_type or 'None' }}</td>
-                                <td>{{ sub.count }}</td>
-                            </tr>
+                            <tr><td>{{ sub.subscription_type or 'None' }}</td><td>{{ sub.count }}</td></tr>
                             {% endfor %}
                         </tbody>
                     </table>
@@ -67,40 +60,18 @@
             </div>
 
             <div class="admin-section">
-                <h2>📊 Monthly Registrations</h2>
-                <div class="admin-chart">
-                    <div class="chart-bars">
-                        {% for month in monthly_users %}
-                        <div class="chart-bar-container">
-                            <div class="chart-bar" style="height: {{ (month.count / 10 * 100)|int if month.count else 10 }}%;">
-                                <span class="chart-value">{{ month.count }}</span>
-                            </div>
-                            <span class="chart-label">{{ month.month.strftime('%b %Y') }}</span>
-                        </div>
-                        {% endfor %}
-                    </div>
-                </div>
-            </div>
-
-            <div class="admin-section">
-                <h2>👤 Recent Users</h2>
+                <h2 style="color:#aaa; font-size:1rem; margin-bottom:12px;">👤 Recent Users</h2>
                 <div class="admin-table">
                     <table>
                         <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Car Number</th>
-                                <th>Joined</th>
-                            </tr>
+                            <tr><th>Name</th><th>Car Number</th><th>Joined</th></tr>
                         </thead>
                         <tbody>
                             {% for user in recent_users %}
                             <tr>
                                 <td>{{ user.name }}</td>
-                                <td>{{ user.email }}</td>
                                 <td>{{ user.car_number }}</td>
-                                <td>{{ user.created_at.strftime('%b %d, %Y') }}</td>
+                                <td>{{ user.created_at.strftime('%b %d, %Y') if user.created_at else 'N/A' }}</td>
                             </tr>
                             {% endfor %}
                         </tbody>
@@ -108,193 +79,26 @@
                 </div>
             </div>
 
-            <div class="admin-actions">
-                <a href="/" class="btn-secondary">← Back to App</a>
-                <a href="/logout" class="btn-danger">🚪 Logout</a>
+            <div class="admin-actions" style="display:flex; gap:12px; justify-content:center; margin-top:20px;">
+                <a href="/" class="btn-secondary" style="padding:12px 24px; text-decoration:none;">← Back to App</a>
+                <a href="/logout" style="padding:12px 24px; background:#ff4444; color:#fff; border-radius:10px; text-decoration:none; font-weight:600;">🚪 Logout</a>
             </div>
         </div>
     </div>
 
     <style>
-        .admin-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        .admin-nav {
-            margin-bottom: 30px;
-        }
-
-        .admin-dashboard h1 {
-            font-size: 2rem;
-            color: #FFD700;
-            margin-bottom: 4px;
-        }
-
-        .admin-dashboard .subtitle {
-            color: #888;
-            margin-bottom: 24px;
-        }
-
-        .admin-stats-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 16px;
-            margin-bottom: 30px;
-        }
-
-        .admin-stat-card {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 215, 0, 0.1);
-            border-radius: 16px;
-            padding: 20px;
-            text-align: center;
-        }
-
-        .admin-stat-card .stat-icon {
-            font-size: 2rem;
-            display: block;
-        }
-
-        .admin-stat-card .stat-number {
-            font-size: 2.2rem;
-            font-weight: 800;
-            color: #FFD700;
-            display: block;
-        }
-
-        .admin-stat-card .stat-label {
-            font-size: 0.85rem;
-            color: #888;
-        }
-
-        .admin-section {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 24px;
-        }
-
-        .admin-section h2 {
-            font-size: 1.1rem;
-            color: #aaa;
-            margin-bottom: 16px;
-        }
-
-        .admin-table {
-            overflow-x: auto;
-        }
-
-        .admin-table table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .admin-table th {
-            text-align: left;
-            padding: 10px 12px;
-            color: #888;
-            font-weight: 600;
-            font-size: 0.8rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .admin-table td {
-            padding: 10px 12px;
-            color: #ccc;
-            font-size: 0.9rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
-        }
-
-        .admin-table tr:hover td {
-            background: rgba(255, 215, 0, 0.03);
-        }
-
-        .admin-chart {
-            padding: 10px 0;
-        }
-
-        .chart-bars {
-            display: flex;
-            align-items: flex-end;
-            gap: 20px;
-            height: 200px;
-            justify-content: center;
-        }
-
-        .chart-bar-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            height: 100%;
-            justify-content: flex-end;
-        }
-
-        .chart-bar {
-            width: 40px;
-            background: linear-gradient(180deg, #FFD700, #FFA500);
-            border-radius: 4px 4px 0 0;
-            min-height: 20px;
-            position: relative;
-            transition: height 0.5s ease;
-        }
-
-        .chart-bar .chart-value {
-            position: absolute;
-            top: -22px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 0.7rem;
-            color: #ccc;
-        }
-
-        .chart-label {
-            font-size: 0.65rem;
-            color: #888;
-            margin-top: 6px;
-        }
-
-        .admin-actions {
-            display: flex;
-            gap: 12px;
-            justify-content: center;
-            margin-top: 20px;
-        }
-
-        .btn-danger {
-            padding: 12px 28px;
-            background: #ff4444;
-            color: #fff;
-            border: none;
-            border-radius: 10px;
-            font-weight: 600;
-            text-decoration: none;
-            display: inline-block;
-        }
-
-        .btn-danger:hover {
-            background: #cc0000;
-        }
-
-        @media (max-width: 768px) {
-            .admin-stats-grid {
-                grid-template-columns: 1fr 1fr;
-            }
-            .chart-bars {
-                gap: 10px;
-            }
-            .chart-bar {
-                width: 30px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .admin-stats-grid {
-                grid-template-columns: 1fr;
-            }
-        }
+        .admin-container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .admin-stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+        .admin-stat-card { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,215,0,0.1); border-radius: 16px; padding: 20px; text-align: center; }
+        .admin-stat-card .stat-number { font-size: 2.2rem; font-weight: 800; color: #FFD700; display: block; }
+        .admin-stat-card .stat-label { font-size: 0.8rem; color: #888; }
+        .admin-section { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 16px; padding: 20px; margin-bottom: 20px; }
+        .admin-table { overflow-x: auto; }
+        .admin-table table { width: 100%; border-collapse: collapse; }
+        .admin-table th, .admin-table td { padding: 10px 12px; text-align: left; color: #ccc; font-size: 0.85rem; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .admin-table th { color: #888; font-weight: 600; }
+        @media (max-width: 600px) { .admin-stats-grid { grid-template-columns: 1fr 1fr; } }
+        @media (max-width: 400px) { .admin-stats-grid { grid-template-columns: 1fr; } }
     </style>
 </body>
 </html>
