@@ -2,79 +2,83 @@
 
 {% block content %}
 <div class="profile-container">
-    <h1>👤 My Profile</h1>
+    <h1 style="font-size:1.4rem; margin-bottom:16px;">👤 My Profile</h1>
 
-    <div class="profile-card">
-        <div class="profile-header">
-            <div class="profile-avatar">🏔️</div>
-            <div class="profile-name">
-                <h2 id="profileName">{{ user.name }}</h2>
-                <p id="profileEmail">{{ user.email }}</p>
+    <div style="background: rgba(255,255,255,0.03); border-radius: 16px; padding: 20px; border: 1px solid rgba(255,255,255,0.05);">
+        <div style="display:flex; align-items:center; gap:16px; margin-bottom:16px;">
+            <div style="width:80px; height:80px; border-radius:50%; background: rgba(255,215,0,0.1); display:flex; align-items:center; justify-content:center; font-size:3rem; border: 2px solid #FFD700;">
+                👤
+            </div>
+            <div>
+                <h2 id="profileName" style="font-size:1.2rem;">{{ user.name }}</h2>
+                <p id="profileEmail" style="color:#888; font-size:0.85rem;">{{ user.email }}</p>
+                <div id="profileStars" style="font-size:1.2rem;">⭐ <span id="starCount">0</span>/7</div>
             </div>
         </div>
 
-        <div class="profile-details">
-            <div class="detail-item">
-                <span class="label">Phone</span>
-                <span id="profilePhone">{{ user.phone }}</span>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:16px;">
+            <div style="background:rgba(255,255,255,0.03); border-radius:10px; padding:10px;">
+                <span style="color:#888; font-size:0.7rem;">Phone</span>
+                <p id="profilePhone" style="color:#fff;">{{ user.phone }}</p>
             </div>
-            <div class="detail-item">
-                <span class="label">Car Number</span>
-                <span id="profileCar">{{ user.car_number }}</span>
+            <div style="background:rgba(255,255,255,0.03); border-radius:10px; padding:10px;">
+                <span style="color:#888; font-size:0.7rem;">Car Number</span>
+                <p id="profileCar" style="color:#fff;">{{ user.car_number }}</p>
             </div>
-            <div class="detail-item">
-                <span class="label">Car Model</span>
-                <span id="profileModel">{{ user.car_model or 'Not specified' }}</span>
+            <div style="background:rgba(255,255,255,0.03); border-radius:10px; padding:10px;">
+                <span style="color:#888; font-size:0.7rem;">Car Model</span>
+                <p id="profileModel" style="color:#fff;">{{ user.car_model or 'Not specified' }}</p>
             </div>
-            <div class="detail-item">
-                <span class="label">Car Type</span>
-                <span id="profileType">{{ user.car_type }}</span>
+            <div style="background:rgba(255,255,255,0.03); border-radius:10px; padding:10px;">
+                <span style="color:#888; font-size:0.7rem;">Car Type</span>
+                <p id="profileType" style="color:#fff;">{{ user.car_type }}</p>
             </div>
-            <div class="detail-item">
-                <span class="label">Join Date</span>
-                <span id="profileJoin">{{ user.join_date }}</span>
+            <div style="background:rgba(255,255,255,0.03); border-radius:10px; padding:10px;">
+                <span style="color:#888; font-size:0.7rem;">Credits</span>
+                <p id="profileCredits" style="color:#FFD700; font-weight:700;">{{ user.credits or 0 }}</p>
             </div>
-            <div class="detail-item">
-                <span class="label">Star Rating</span>
-                <span id="profileStars">⭐ <span id="starCount">0</span>/7</span>
-            </div>
-            <div class="detail-item">
-                <span class="label">Credits</span>
-                <span id="profileCredits">{{ user.credits or 0 }}</span>
-            </div>
-            <div class="detail-item">
-                <span class="label">Total Fill-ups</span>
-                <span id="profileFillups">{{ user.total_fillups or 0 }}</span>
-            </div>
-            <div class="detail-item">
-                <span class="label">VIP Status</span>
-                <span id="profileVip">{{ '✅ Active' if user.is_vip else '❌ Not Active' }}</span>
+            <div style="background:rgba(255,255,255,0.03); border-radius:10px; padding:10px;">
+                <span style="color:#888; font-size:0.7rem;">VIP Status</span>
+                <p id="profileVip" style="color:{{ '#00ff64' if user.is_vip else '#888' }};">{{ '✅ Active' if user.is_vip else '❌ Not Active' }}</p>
             </div>
         </div>
 
-        <a href="/dashboard" class="btn-secondary" style="display: block; text-align: center; margin-top: 16px;">← Back to Dashboard</a>
+        <div style="margin-top:16px; background:rgba(255,215,0,0.05); border-radius:10px; padding:12px; border:1px solid rgba(255,215,0,0.1);">
+            <p style="color:#FFD700; font-size:0.85rem; text-align:center;">⭐ Star Rating: <span id="starDisplay2">0</span>/7</p>
+            <p style="color:#888; font-size:0.75rem; text-align:center;" id="starReason">Based on your car type and subscription status</p>
+        </div>
+
+        <a href="/dashboard" class="btn-secondary" style="display:block; text-align:center; margin-top:16px; width:100%;">← Back to Dashboard</a>
     </div>
 </div>
 
 <script>
-const token = localStorage.getItem('token');
-
-if (!token) {
-    window.location.href = '/login';
-}
-
-fetch('/api/profile', {
-    headers: {
-        'Authorization': `Bearer ${token}`
-    }
-})
-.then(res => res.json())
-.then(data => {
-    document.getElementById('starCount').textContent = data.star_rating || 0;
-    document.getElementById('profileCredits').textContent = data.credits || 0;
-    document.getElementById('profileFillups').textContent = data.total_fillups || 0;
-    document.getElementById('profileVip').textContent = data.is_vip ? '✅ Active' : '❌ Not Active';
-})
-.catch(err => console.error('Profile load error:', err));
+document.addEventListener('DOMContentLoaded', async function() {
+    try {
+        const response = await fetch('/api/profile');
+        const data = await response.json();
+        
+        document.getElementById('profileName').textContent = data.name;
+        document.getElementById('profileEmail').textContent = data.email;
+        document.getElementById('profilePhone').textContent = data.phone;
+        document.getElementById('profileCar').textContent = data.car_number;
+        document.getElementById('profileModel').textContent = data.car_model || 'Not specified';
+        document.getElementById('profileType').textContent = data.car_type;
+        document.getElementById('starCount').textContent = data.star_rating || 0;
+        document.getElementById('starDisplay2').textContent = '⭐'.repeat(data.star_rating || 0) + ' (' + (data.star_rating || 0) + '/7)';
+        document.getElementById('profileCredits').textContent = data.credits || 0;
+        document.getElementById('profileVip').textContent = data.is_vip ? '✅ Active' : '❌ Not Active';
+        
+        // Star reason
+        const reasons = {
+            5: '⭐⭐⭐⭐⭐ Luxury car owner',
+            4: '⭐⭐⭐⭐ SUV owner',
+            3: '⭐⭐⭐ Sedan owner',
+            2: '⭐⭐ Regular commuter',
+            1: '⭐ Beginner'
+        };
+        document.getElementById('starReason').textContent = reasons[data.star_rating] || 'Based on your profile';
+    } catch(e) {}
+});
 </script>
 {% endblock %}
