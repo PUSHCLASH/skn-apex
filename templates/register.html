@@ -5,11 +5,9 @@
     <div class="auth-box">
         <h1>🏔️ SKN APEX</h1>
         <h2>Create Account</h2>
-
-        <div id="errorMessage" style="color:#ff4444; text-align:center; margin-bottom:10px; display:none;"></div>
-        <div id="successMessage" style="color:#00ff64; text-align:center; margin-bottom:10px; display:none;"></div>
-
-        <form id="registerForm" onsubmit="handleRegister(event)">
+        <div id="errorMessage" style="color:#ff4444; text-align:center; display:none;"></div>
+        <div id="successMessage" style="color:#00ff64; text-align:center; display:none;"></div>
+        <form id="registerForm">
             <div class="form-group">
                 <label>Full Name</label>
                 <input type="text" id="name" placeholder="Enter your name" required>
@@ -50,8 +48,8 @@
 </div>
 
 <script>
-async function handleRegister(event) {
-    event.preventDefault();
+document.getElementById('registerForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
 
     const name = document.getElementById('name').value.trim();
     const email = document.getElementById('email').value.trim();
@@ -72,12 +70,6 @@ async function handleRegister(event) {
         return;
     }
 
-    if (!email.includes('@')) {
-        errorDiv.textContent = 'Please enter a valid email!';
-        errorDiv.style.display = 'block';
-        return;
-    }
-
     const btn = document.getElementById('registerBtn');
     btn.textContent = 'Registering...';
     btn.disabled = true;
@@ -85,41 +77,30 @@ async function handleRegister(event) {
     try {
         const response = await fetch('/api/register', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                name: name,
-                email: email,
-                phone: phone,
-                password: password,
-                car_number: car_number,
-                car_model: car_model,
-                car_type: car_type
-            })
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({name, email, phone, password, car_number, car_model, car_type})
         });
 
         const result = await response.json();
 
         if (result.status === 'success') {
-            localStorage.setItem('token', result.token);
-            successDiv.textContent = 'Registration successful! Redirecting...';
+            // ✅ No token needed - session is set by backend
+            successDiv.textContent = 'Registration successful!';
             successDiv.style.display = 'block';
             setTimeout(() => {
                 window.location.href = '/dashboard';
             }, 1500);
         } else {
-            errorDiv.textContent = result.error || 'Registration failed. Please try again.';
+            errorDiv.textContent = result.error || 'Registration failed.';
             errorDiv.style.display = 'block';
         }
     } catch (error) {
-        console.error('Registration error:', error);
-        errorDiv.textContent = 'Network error. Please check your internet connection and try again.';
+        errorDiv.textContent = 'Network error. Please try again.';
         errorDiv.style.display = 'block';
     } finally {
         btn.textContent = 'Register';
         btn.disabled = false;
     }
-}
+});
 </script>
 {% endblock %}
