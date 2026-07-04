@@ -57,24 +57,24 @@
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const token = localStorage.getItem('token');
-    if (!token) {
-        window.location.href = '/login';
-        return;
-    }
+const token = localStorage.getItem('token');
 
-    fetch('/api/profile', {
-        headers: {'Authorization': `Bearer ${token}`}
-    })
-    .then(res => res.json())
-    .then(data => {
-        document.getElementById('starCount').textContent = data.star_rating || 0;
-        document.getElementById('profileCredits').textContent = data.credits || 0;
-        document.getElementById('profileFillups').textContent = data.total_fillups || 0;
-        document.getElementById('profileVip').textContent = data.is_vip ? '✅ Active' : '❌ Not Active';
-    })
-    .catch(() => {});
-});
+if (!token) {
+    window.location.href = '/login';
+}
+
+fetch('/api/profile', {
+    headers: {
+        'Authorization': `Bearer ${token}`
+    }
+})
+.then(res => res.json())
+.then(data => {
+    document.getElementById('starCount').textContent = data.star_rating || 0;
+    document.getElementById('profileCredits').textContent = data.credits || 0;
+    document.getElementById('profileFillups').textContent = data.total_fillups || 0;
+    document.getElementById('profileVip').textContent = data.is_vip ? '✅ Active' : '❌ Not Active';
+})
+.catch(err => console.error('Profile load error:', err));
 </script>
 {% endblock %}
