@@ -9,7 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 </head>
 <body>
-    <!-- CEO Badge - Top Right Corner -->
+    <!-- CEO Badge -->
     <div class="ceo-badge" onclick="openCEOModal()">
         <img src="/static/images/ceo-logo.png" alt="CEO" class="ceo-avatar">
         <span class="ceo-label">CEO of App</span>
@@ -26,9 +26,7 @@
             <div class="ceo-modal-body">
                 <p>📞 <strong>Phone:</strong> 8950592855</p>
                 <p>💬 <strong>Have a query?</strong> Get in touch!</p>
-                <a href="https://wa.me/918950592855?text=Hey%20Kaushtubh%2C%20I%20have%20a%20query%20about%20SKN%20APEX" target="_blank" class="whatsapp-btn">
-                    📱 Message on WhatsApp
-                </a>
+                <a href="https://wa.me/918950592855?text=Hey%20Kaushtubh%2C%20I%20have%20a%20query%20about%20SKN%20APEX" target="_blank" class="whatsapp-btn">📱 Message on WhatsApp</a>
             </div>
             <div class="ceo-modal-footer">
                 <button onclick="closeCEOModal()" class="close-btn">Close</button>
@@ -36,7 +34,7 @@
         </div>
     </div>
 
-    <!-- Admin Button - Top Right Corner -->
+    <!-- Admin Button -->
     <a href="/admin-login" class="admin-btn">🔐 Admin</a>
 
     <!-- Main App Container -->
@@ -55,7 +53,6 @@
     </div>
 
     <script>
-        // CEO Modal Functions
         function openCEOModal() {
             document.getElementById('ceoModal').style.display = 'flex';
         }
@@ -64,14 +61,11 @@
             document.getElementById('ceoModal').style.display = 'none';
         }
 
-        // Close modal on Escape key
         document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                closeCEOModal();
-            }
+            if (e.key === 'Escape') closeCEOModal();
         });
 
-        console.log('✅ SKN APEX loaded with CEO Badge');
+        console.log('✅ SKN APEX loaded');
     </script>
 </body>
 </html>
