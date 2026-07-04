@@ -5,41 +5,39 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Login - SKN APEX</title>
     <link rel="stylesheet" href="/static/css/style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="auth-container">
         <div class="auth-box admin-auth">
             <h1>🔐 Admin Login</h1>
-            <p class="subtitle">Face Verification Required</p>
-            
+            <p class="subtitle" style="color:#888; text-align:center; font-size:0.85rem;">Face Verification Required</p>
+
             <div id="errorMessage" style="color:#ff4444; text-align:center; display:none;"></div>
             <div id="successMessage" style="color:#00ff64; text-align:center; display:none;"></div>
-            
+
             <form id="adminLoginForm">
                 <div class="form-group">
                     <label>Admin ID</label>
                     <input type="text" id="admin_id" placeholder="Enter Admin ID" required>
                 </div>
-                
                 <div class="form-group">
                     <label>Password</label>
                     <input type="password" id="password" placeholder="Enter Password" required>
                 </div>
-                
+
                 <div class="form-group" id="faceCaptureSection">
                     <label>Face Verification</label>
                     <div class="face-capture-box">
                         <video id="faceVideo" autoplay playsinline></video>
                         <canvas id="faceCanvas" style="display:none;"></canvas>
-                        <button type="button" id="captureFaceBtn" class="btn-secondary">📸 Capture Face</button>
-                        <p id="faceStatus" style="color:#888; font-size:0.8rem;">Click "Capture Face" to verify</p>
+                        <button type="button" id="captureFaceBtn" class="btn-secondary" style="margin-top:10px;">📸 Capture Face</button>
+                        <p id="faceStatus" style="color:#888; font-size:0.8rem; margin-top:6px;">Click "Capture Face" to verify</p>
                     </div>
                 </div>
-                
-                <button type="submit" class="btn-primary" id="adminLoginBtn">Login as Admin</button>
+
+                <button type="submit" class="btn-primary" id="adminLoginBtn" style="width:100%;">Login as Admin</button>
             </form>
-            
+
             <p class="auth-link"><a href="/">← Back to Home</a></p>
         </div>
     </div>
@@ -50,19 +48,15 @@
         const canvas = document.getElementById('faceCanvas');
         const context = canvas.getContext('2d');
 
-        // Start camera
         async function startCamera() {
             try {
-                const stream = await navigator.mediaDevices.getUserMedia({ 
-                    video: { facingMode: 'user' } 
-                });
+                const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } });
                 video.srcObject = stream;
             } catch (err) {
                 document.getElementById('faceStatus').textContent = '❌ Camera access denied. Please allow camera.';
             }
         }
 
-        // Capture face
         document.getElementById('captureFaceBtn').addEventListener('click', function() {
             canvas.width = video.videoWidth;
             canvas.height = video.videoHeight;
@@ -74,7 +68,6 @@
             this.disabled = true;
         });
 
-        // Admin login form
         document.getElementById('adminLoginForm').addEventListener('submit', async function(e) {
             e.preventDefault();
 
@@ -82,7 +75,7 @@
             const password = document.getElementById('password').value.trim();
             const errorDiv = document.getElementById('errorMessage');
             const successDiv = document.getElementById('successMessage');
-            
+
             errorDiv.style.display = 'none';
             successDiv.style.display = 'none';
 
@@ -106,13 +99,8 @@
                 const response = await fetch('/api/admin/login', {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({
-                        admin_id: admin_id,
-                        password: password,
-                        face_data: faceImageData
-                    })
+                    body: JSON.stringify({admin_id, password, face_data: faceImageData})
                 });
-
                 const result = await response.json();
 
                 if (result.status === 'success') {
@@ -122,7 +110,7 @@
                         window.location.href = '/admin-dashboard';
                     }, 1500);
                 } else {
-                    errorDiv.textContent = result.error || 'Login failed. Please try again.';
+                    errorDiv.textContent = result.error || 'Login failed.';
                     errorDiv.style.display = 'block';
                 }
             } catch (error) {
@@ -134,26 +122,17 @@
             }
         });
 
-        // Start camera on page load
         startCamera();
     </script>
 
     <style>
-        .admin-auth {
-            max-width: 420px !important;
-        }
-        .admin-auth .subtitle {
-            color: #aaa;
-            text-align: center;
-            margin-bottom: 20px;
-            font-size: 0.9rem;
-        }
+        .admin-auth { max-width: 420px !important; }
         .face-capture-box {
             background: rgba(0,0,0,0.3);
             border-radius: 12px;
             padding: 10px;
             text-align: center;
-            border: 1px solid rgba(255,215,0,0.2);
+            border: 1px solid rgba(255,215,0,0.1);
         }
         .face-capture-box video {
             width: 100%;
@@ -161,25 +140,9 @@
             border-radius: 8px;
             background: #000;
         }
-        .face-capture-box .btn-secondary {
-            margin-top: 10px;
-            padding: 8px 20px;
-            border-radius: 8px;
-            background: transparent;
-            color: #FFD700;
-            border: 1px solid #FFD700;
-            cursor: pointer;
-            font-weight: 600;
-        }
-        .face-capture-box .btn-secondary:hover {
-            background: rgba(255,215,0,0.1);
-        }
         .face-capture-box .btn-secondary:disabled {
             opacity: 0.5;
             cursor: not-allowed;
-        }
-        #faceStatus {
-            margin-top: 8px;
         }
     </style>
 </body>
