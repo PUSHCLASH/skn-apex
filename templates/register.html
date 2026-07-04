@@ -6,7 +6,10 @@
         <h1>🏔️ SKN APEX</h1>
         <h2>Create Account</h2>
 
-        <form id="registerForm">
+        <div id="errorMessage" style="color:#ff4444; text-align:center; margin-bottom:10px; display:none;"></div>
+        <div id="successMessage" style="color:#00ff64; text-align:center; margin-bottom:10px; display:none;"></div>
+
+        <form id="registerForm" onsubmit="handleRegister(event)">
             <div class="form-group">
                 <label>Full Name</label>
                 <input type="text" id="name" placeholder="Enter your name" required>
@@ -40,50 +43,83 @@
                     <option value="luxury">Luxury</option>
                 </select>
             </div>
-            <button type="submit" class="btn-primary">Register</button>
+            <button type="submit" class="btn-primary" id="registerBtn">Register</button>
         </form>
         <p class="auth-link">Already have an account? <a href="/login">Login</a></p>
     </div>
 </div>
 
 <script>
-document.getElementById('registerForm').addEventListener('submit', async function(e) {
-    e.preventDefault();
+async function handleRegister(event) {
+    event.preventDefault();
 
-    const data = {
-        name: document.getElementById('name').value.trim(),
-        email: document.getElementById('email').value.trim(),
-        phone: document.getElementById('phone').value.trim(),
-        password: document.getElementById('password').value,
-        car_number: document.getElementById('car_number').value.trim().toUpperCase(),
-        car_model: document.getElementById('car_model').value.trim(),
-        car_type: document.getElementById('car_type').value
-    };
+    const name = document.getElementById('name').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const phone = document.getElementById('phone').value.trim();
+    const password = document.getElementById('password').value;
+    const car_number = document.getElementById('car_number').value.trim().toUpperCase();
+    const car_model = document.getElementById('car_model').value.trim();
+    const car_type = document.getElementById('car_type').value;
 
-    // Validation
-    if (!data.name || !data.email || !data.phone || !data.password || !data.car_number) {
-        alert('All fields are required!');
+    const errorDiv = document.getElementById('errorMessage');
+    const successDiv = document.getElementById('successMessage');
+    errorDiv.style.display = 'none';
+    successDiv.style.display = 'none';
+
+    if (!name || !email || !phone || !password || !car_number) {
+        errorDiv.textContent = 'All fields are required!';
+        errorDiv.style.display = 'block';
         return;
     }
+
+    if (!email.includes('@')) {
+        errorDiv.textContent = 'Please enter a valid email!';
+        errorDiv.style.display = 'block';
+        return;
+    }
+
+    const btn = document.getElementById('registerBtn');
+    btn.textContent = 'Registering...';
+    btn.disabled = true;
 
     try {
         const response = await fetch('/api/register', {
             method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(data)
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                name: name,
+                email: email,
+                phone: phone,
+                password: password,
+                car_number: car_number,
+                car_model: car_model,
+                car_type: car_type
+            })
         });
+
         const result = await response.json();
 
         if (result.status === 'success') {
             localStorage.setItem('token', result.token);
-            alert('Registration successful! Welcome to SKN APEX!');
-            window.location.href = '/dashboard';
+            successDiv.textContent = 'Registration successful! Redirecting...';
+            successDiv.style.display = 'block';
+            setTimeout(() => {
+                window.location.href = '/dashboard';
+            }, 1500);
         } else {
-            alert(result.error || 'Registration failed. Please try again.');
+            errorDiv.textContent = result.error || 'Registration failed. Please try again.';
+            errorDiv.style.display = 'block';
         }
     } catch (error) {
-        alert('Network error. Please check your internet connection.');
+        console.error('Registration error:', error);
+        errorDiv.textContent = 'Network error. Please check your internet connection and try again.';
+        errorDiv.style.display = 'block';
+    } finally {
+        btn.textContent = 'Register';
+        btn.disabled = false;
     }
-});
+}
 </script>
 {% endblock %}
