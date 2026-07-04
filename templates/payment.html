@@ -20,8 +20,8 @@
         </div>
 
         <div class="payment-methods">
-            <button onclick="payNow('online')" class="btn-primary">Pay Online</button>
-            <button onclick="payNow('cash')" class="btn-secondary">Cash at Pump</button>
+            <button onclick="payOnline()" class="btn-primary">Pay Online</button>
+            <button onclick="payCash()" class="btn-secondary">Cash at Pump</button>
         </div>
 
         <div id="qrContainer" style="margin-top: 20px; text-align: center;">
@@ -33,20 +33,25 @@
 </div>
 
 <script>
+const token = localStorage.getItem('token');
+
+if (!token) {
+    window.location.href = '/login';
+}
+
 document.getElementById('quantity').addEventListener('input', function() {
     const total = this.value * 83;
     document.getElementById('totalAmount').textContent = total.toFixed(2);
 });
 
-function payNow(method) {
+function payOnline() {
     const quantity = document.getElementById('quantity').value;
-    const amount = quantity * 83;
+    const amount = (quantity * 83).toFixed(2);
+    alert('📱 Please scan the UPI QR code above and pay ₹' + amount);
+}
 
-    if (method === 'online') {
-        alert('📱 Please scan the UPI QR code above and pay ₹' + amount.toFixed(2));
-    } else {
-        alert('💰 Pay at pump. You will receive a receipt.');
-    }
+function payCash() {
+    alert('💰 Pay at the pump. You will receive a receipt.');
 }
 </script>
 {% endblock %}
