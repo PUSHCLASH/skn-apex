@@ -39,6 +39,7 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const token = localStorage.getItem('token');
+
     if (!token) {
         window.location.href = '/login';
         return;
@@ -50,11 +51,13 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(data => {
             document.getElementById('queueCount').textContent = data.total || 0;
         })
-        .catch(() => {});
+        .catch(err => console.log('Queue load error:', err));
 
     // Load profile
     fetch('/api/profile', {
-        headers: {'Authorization': `Bearer ${token}`}
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
     })
     .then(res => res.json())
     .then(data => {
@@ -69,7 +72,7 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('subscriptionBanner').style.display = 'block';
         }
     })
-    .catch(() => {});
+    .catch(err => console.log('Profile load error:', err));
 });
 </script>
 {% endblock %}
