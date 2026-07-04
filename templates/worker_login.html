@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Worker Login - SKN APEX</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-box">
+            <h1>⛽ SKN APEX</h1>
+            <h2>👨‍🔧 Worker Login</h2>
+
+            <div id="errorMessage" style="color:#ff4444; text-align:center; display:none;"></div>
+            <div id="successMessage" style="color:#00ff64; text-align:center; display:none;"></div>
+
+            <form id="workerLoginForm">
+                <div class="form-group">
+                    <label>Worker ID</label>
+                    <input type="text" id="worker_id" placeholder="Enter Worker ID" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="password" placeholder="Enter Password" required>
+                </div>
+                <button type="submit" class="btn-primary" style="width:100%;">Login</button>
+            </form>
+            <p class="auth-link"><a href="/">← Back to Home</a></p>
+        </div>
+    </div>
+
+    <script>
+    document.getElementById('workerLoginForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const worker_id = document.getElementById('worker_id').value.trim();
+        const password = document.getElementById('password').value.trim();
+        const errorDiv = document.getElementById('errorMessage');
+        const successDiv = document.getElementById('successMessage');
+
+        errorDiv.style.display = 'none';
+        successDiv.style.display = 'none';
+
+        if (!worker_id || !password) {
+            errorDiv.textContent = 'Worker ID and Password required!';
+            errorDiv.style.display = 'block';
+            return;
+        }
+
+        try {
+            const response = await fetch('/api/worker/login', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({worker_id, password})
+            });
+            const result = await response.json();
+
+            if (result.status === 'success') {
+                successDiv.textContent = '✅ Login successful!';
+                successDiv.style.display = 'block';
+                setTimeout(() => {
+                    window.location.href = '/worker-dashboard';
+                }, 1500);
+            } else {
+                errorDiv.textContent = result.error || 'Login failed.';
+                errorDiv.style.display = 'block';
+            }
+        } catch (error) {
+            errorDiv.textContent = 'Network error. Please try again.';
+            errorDiv.style.display = 'block';
+        }
+    });
+    </script>
+</body>
+</html>
