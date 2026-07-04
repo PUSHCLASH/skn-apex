@@ -2,7 +2,8 @@
 
 {% block content %}
 <div class="queue-container">
-    <h1>Live Queue</h1>
+    <h1 style="font-size:1.4rem; margin-bottom:4px;">📍 Live Queue</h1>
+    <p style="color:#888; font-size:0.85rem; margin-bottom:16px;">Real-time updates</p>
 
     <div class="queue-status">
         <div class="status-card">
@@ -19,29 +20,24 @@
         </div>
     </div>
 
-    <button class="btn-primary" onclick="joinQueue()">Join Queue</button>
+    <button class="btn-primary" onclick="joinQueue()" style="width:100%;">⚡ Join Queue</button>
 
-    <div class="queue-list">
-        <h3>Current Queue</h3>
-        <div id="queueList"></div>
+    <div style="margin-top: 16px; background: rgba(255,255,255,0.03); border-radius: 12px; padding: 14px; border: 1px solid rgba(255,255,255,0.05);">
+        <h3 style="font-size:0.9rem; color:#aaa; margin-bottom:8px;">Current Queue</h3>
+        <div id="queueList">
+            <p style="color:#888; text-align:center; font-size:0.85rem;">Loading queue...</p>
+        </div>
     </div>
 </div>
 
 <script>
-const token = localStorage.getItem('token');
-
-if (!token) {
-    window.location.href = '/login';
-}
+let token = '';
 
 async function joinQueue() {
     try {
         const response = await fetch('/api/queue/join', {
             method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json'
-            }
+            headers: {'Content-Type': 'application/json'}
         });
         const result = await response.json();
 
@@ -49,7 +45,9 @@ async function joinQueue() {
             document.getElementById('userToken').textContent = result.token;
             document.getElementById('userPosition').textContent = result.position;
             document.getElementById('estWait').textContent = result.estimated_wait + ' min';
-            alert('You joined the queue! Token: ' + result.token);
+            document.getElementById('creditCount').textContent = result.credits_remaining || 0;
+            alert('✅ You joined the queue! Token: ' + result.token);
+            loadQueue();
         } else {
             alert(result.error || 'Failed to join queue');
         }
@@ -67,25 +65,25 @@ async function loadQueue() {
         list.innerHTML = '';
 
         if (data.waiting && data.waiting.length > 0) {
-            data.waiting.forEach((item, index) => {
+            data.waiting.forEach((item) => {
                 const div = document.createElement('div');
                 div.className = 'queue-item';
                 div.innerHTML = `
-                    <span class="position">#${index + 1}</span>
+                    <span class="position">#${item.position}</span>
                     <span class="car">${item.car_number}</span>
-                    <span class="status waiting">Waiting</span>
+                    <span class="status ${item.status}">${item.status}</span>
                 `;
                 list.appendChild(div);
             });
         } else {
-            list.innerHTML = '<p style="color:#888; text-align:center;">No cars in queue</p>';
+            list.innerHTML = '<p style="color:#888; text-align:center; font-size:0.85rem;">No cars in queue 🎉</p>';
         }
     } catch (error) {
-        console.error('Load queue error:', error);
+        console.error('Queue load error:', error);
     }
 }
 
 document.addEventListener('DOMContentLoaded', loadQueue);
-setInterval(loadQueue, 10000);
+setInterval(loadQueue, 5000);
 </script>
 {% endblock %}
