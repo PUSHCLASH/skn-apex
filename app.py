@@ -40,6 +40,11 @@ def register_page():
 def login_page():
     return render_template('login.html')
 
+@app.route('/logout')
+def logout_page():
+    session.clear()
+    return redirect('/')
+
 @app.route('/dashboard')
 @login_required
 def dashboard():
@@ -122,7 +127,6 @@ def register():
     conn.commit()
     conn.close()
 
-    # ✅ Set session instead of returning token
     session['user_id'] = user_id
     return jsonify({
         'status': 'success',
@@ -147,17 +151,11 @@ def login():
     if not bcrypt.checkpw(password.encode('utf-8'), user['password_hash'].encode('utf-8')):
         return jsonify({'error': 'Invalid credentials'}), 401
 
-    # ✅ Set session
     session['user_id'] = user['id']
     return jsonify({
         'status': 'success',
         'user': {'id': user['id'], 'name': user['name'], 'email': user['email']}
     })
-
-@app.route('/api/logout', methods=['POST'])
-def logout():
-    session.clear()
-    return jsonify({'status': 'success'})
 
 @app.route('/api/profile', methods=['GET'])
 @login_required
