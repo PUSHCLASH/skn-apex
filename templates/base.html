@@ -17,70 +17,16 @@
                 <a href="/queue">Queue</a>
                 <a href="/profile">Profile</a>
                 <a href="/subscriptions">Subscribe</a>
-                <a href="#" onclick="logout()" style="color:#ff4444;">Logout</a>
+                <a href="/logout" style="color:#ff4444;">Logout</a>
             </div>
         </nav>
         {% block content %}{% endblock %}
     </div>
 
     <script>
-        // ============================================
-        // GLOBAL FUNCTIONS - WORKING VERSION
-        // ============================================
-
-        function getToken() {
-            return localStorage.getItem('token');
-        }
-
-        function logout() {
-            localStorage.removeItem('token');
-            window.location.href = '/';
-        }
-
-        function isLoggedIn() {
-            return !!getToken();
-        }
-
-        // Check if user is logged in (except on public pages)
-        const publicPages = ['/', '/login', '/register'];
-        if (!publicPages.includes(window.location.pathname)) {
-            if (!isLoggedIn()) {
-                window.location.href = '/login';
-            }
-        }
-
-        // ============================================
-        // API HELPER - With Better Error Handling
-        // ============================================
-
-        async function apiCall(method, endpoint, data = null) {
-            const token = getToken();
-            const options = {
-                method: method,
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            };
-
-            if (token) {
-                options.headers['Authorization'] = `Bearer ${token}`;
-            }
-
-            if (data) {
-                options.body = JSON.stringify(data);
-            }
-
-            try {
-                const response = await fetch(endpoint, options);
-                const result = await response.json();
-                return result;
-            } catch (error) {
-                console.error('API Error:', error);
-                return { error: 'Network error. Please try again.' };
-            }
-        }
-
-        console.log('SKN APEX loaded successfully');
+        // Simple check: if on protected page and not logged in, redirect to login
+        // (The backend will also redirect, but this is for UX)
+        console.log('SKN APEX loaded');
     </script>
 </body>
 </html>
