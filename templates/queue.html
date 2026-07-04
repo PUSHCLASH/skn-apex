@@ -28,17 +28,13 @@
 </div>
 
 <script>
-function getToken() {
-    return localStorage.getItem('token');
+const token = localStorage.getItem('token');
+
+if (!token) {
+    window.location.href = '/login';
 }
 
 async function joinQueue() {
-    const token = getToken();
-    if (!token) {
-        window.location.href = '/login';
-        return;
-    }
-
     try {
         const response = await fetch('/api/queue/join', {
             method: 'POST',
@@ -85,14 +81,11 @@ async function loadQueue() {
             list.innerHTML = '<p style="color:#888; text-align:center;">No cars in queue</p>';
         }
     } catch (error) {
-        console.error('Failed to load queue:', error);
+        console.error('Load queue error:', error);
     }
 }
 
-// Load queue on page load
 document.addEventListener('DOMContentLoaded', loadQueue);
-
-// Refresh queue every 10 seconds
 setInterval(loadQueue, 10000);
 </script>
 {% endblock %}
