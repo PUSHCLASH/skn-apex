@@ -3,7 +3,7 @@
 {% block content %}
 <div class="queue-container">
     <h1>Live Queue</h1>
-    
+
     <div class="queue-status">
         <div class="status-card">
             <span class="label">Your Token</span>
@@ -18,9 +18,9 @@
             <span class="value" id="estWait">-</span>
         </div>
     </div>
-    
+
     <button class="btn-primary" onclick="joinQueue()">Join Queue</button>
-    
+
     <div class="queue-list">
         <h3>Current Queue</h3>
         <div id="queueList"></div>
@@ -28,50 +28,71 @@
 </div>
 
 <script>
-const socket = io();
-let token = localStorage.getItem('token');
-
-socket.on('queue_update', (data) => {
-    updateQueue(data);
-});
+function getToken() {
+    return localStorage.getItem('token');
+}
 
 async function joinQueue() {
-    const response = await fetch('/api/queue/join', {
-        method: 'POST',
-        headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
+    const token = getToken();
+    if (!token) {
+        window.location.href = '/login';
+        return;
+    }
+
+    try {
+        const response = await fetch('/api/queue/join', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
+        const result = await response.json();
+
+        if (result.status === 'success') {
+            document.getElementById('userToken').textContent = result.token;
+            document.getElementById('userPosition').textContent = result.position;
+            document.getElementById('estWait').textContent = result.estimated_wait + ' min';
+            alert('You joined the queue! Token: ' + result.token);
+        } else {
+            alert(result.error || 'Failed to join queue');
         }
-    });
-    const result = await response.json();
-    if (result.status === 'success') {
-        document.getElementById('userToken').textContent = result.token;
-        document.getElementById('userPosition').textContent = result.position;
-        document.getElementById('estWait').textContent = result.estimated_wait + ' min';
-    } else {
-        alert(result.error);
+    } catch (error) {
+        alert('Network error. Please try again.');
     }
 }
 
-function updateQueue(data) {
-    const list = document.getElementById('queueList');
-    list.innerHTML = '';
-    data.waiting.forEach((item, index) => {
-        const div = document.createElement('div');
-        div.className = 'queue-item';
-        div.innerHTML = `
-            <span class="position">#${index + 1}</span>
-            <span class="car">${item.car_number}</span>
-            <span class="status ${item.status}">${item.status}</span>
-        `;
-        list.appendChild(div);
-    });
+async function loadQueue() {
+    try {
+        const response = await fetch('/api/queue/status');
+        const data = await response.json();
+
+        const list = document.getElementById('queueList');
+        list.innerHTML = '';
+
+        if (data.waiting && data.waiting.length > 0) {
+            data.waiting.forEach((item, index) => {
+                const div = document.createElement('div');
+                div.className = 'queue-item';
+                div.innerHTML = `
+                    <span class="position">#${index + 1}</span>
+                    <span class="car">${item.car_number}</span>
+                    <span class="status waiting">Waiting</span>
+                `;
+                list.appendChild(div);
+            });
+        } else {
+            list.innerHTML = '<p style="color:#888; text-align:center;">No cars in queue</p>';
+        }
+    } catch (error) {
+        console.error('Failed to load queue:', error);
+    }
 }
 
-setInterval(async () => {
-    const response = await fetch('/api/queue/status');
-    const data = await response.json();
-    updateQueue(data);
-}, 5000);
+// Load queue on page load
+document.addEventListener('DOMContentLoaded', loadQueue);
+
+// Refresh queue every 10 seconds
+setInterval(loadQueue, 10000);
 </script>
 {% endblock %}
