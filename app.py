@@ -5,7 +5,6 @@ import base64
 import json
 import random
 import requests
-import razorpay
 from datetime import datetime, timedelta
 from functools import wraps
 from flask import Flask, request, jsonify, render_template, session, redirect, url_for
@@ -20,14 +19,6 @@ CORS(app, supports_credentials=True)
 DATABASE_URL = os.environ.get('DATABASE_URL')
 if not DATABASE_URL:
     raise RuntimeError("DATABASE_URL not set")
-
-# ============================================
-# RAZORPAY CONFIG
-# ============================================
-
-RAZORPAY_KEY_ID = os.environ.get('RAZORPAY_KEY_ID', 'rzp_test_xxxxxxxx')
-RAZORPAY_KEY_SECRET = os.environ.get('RAZORPAY_KEY_SECRET', 'xxxxxxxx')
-razorpay_client = razorpay.Client(auth=(RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET))
 
 # ============================================
 # ADMIN CREDENTIALS
@@ -106,111 +97,70 @@ def calculate_stars(user):
     return min(stars, 7)
 
 # ============================================
-# WHATSAPP NOTIFICATION
+# WHATSAPP NOTIFICATION (Placeholder)
 # ============================================
 
 def send_whatsapp(phone, message):
-    """Send WhatsApp notification via WhatsApp Business API"""
-    try:
-        # For production, use WhatsApp Business API
-        # For now, we'll just print (or use Twilio)
-        print(f"WhatsApp to {phone}: {message}")
-        return True
-    except:
-        return False
-
-def generate_receipt(transaction_data):
-    """Generate receipt PDF"""
-    from reportlab.lib.pagesizes import A4
-    from reportlab.pdfgen import canvas
-    from reportlab.lib.utils import ImageReader
-    
-    receipt_id = f"SKN-{datetime.now().strftime('%Y%m%d')}-{random.randint(1000,9999)}"
-    filename = f"receipt_{receipt_id}.pdf"
-    
-    c = canvas.Canvas(filename, pagesize=A4)
-    c.setFillColorRGB(1, 0.84, 0)  # Gold
-    c.setFont("Helvetica-Bold", 20)
-    c.drawString(50, 800, "SKN APEX - Payment Receipt")
-    
-    c.setFillColorRGB(1, 1, 1)  # White
-    c.setFont("Helvetica", 12)
-    y = 750
-    c.drawString(50, y, f"Receipt #: {receipt_id}")
-    c.drawString(50, y-25, f"Date: {datetime.now().strftime('%d-%b-%Y %H:%M')}")
-    c.drawString(50, y-50, f"Car: {transaction_data.get('car_number', 'N/A')}")
-    c.drawString(50, y-75, f"Amount: ₹{transaction_data.get('amount', 0)}")
-    c.drawString(50, y-100, f"Payment Type: {transaction_data.get('type', 'N/A')}")
-    c.drawString(50, y-125, f"Payment ID: {transaction_data.get('payment_id', 'N/A')}")
-    c.drawString(50, y-150, f"GST (18%): ₹{transaction_data.get('gst', 0)}")
-    c.drawString(50, y-175, f"Total: ₹{transaction_data.get('total', 0)}")
-    
-    c.setFillColorRGB(0.5, 0.5, 0.5)
-    c.setFont("Helvetica", 10)
-    c.drawString(50, 100, "Thank you for choosing SKN APEX!")
-    c.drawString(50, 80, "For queries: +91 8950592855")
-    c.save()
-    
-    return filename, receipt_id
+    print(f"WhatsApp to {phone}: {message}")
+    return True
 
 # ============================================
-# TERMS & CONDITIONS
+# TERMS & CONDITIONS DATA
 # ============================================
 
 TERMS_DATA = {
     'title': 'Terms & Conditions',
     'content': """
-    1. Acceptance of Terms
-    By using SKN APEX, you agree to these terms.
+1. Acceptance of Terms
+By using SKN APEX, you agree to these terms.
 
-    2. User Account
-    You are responsible for maintaining account security and all activities under your account.
+2. User Account
+You are responsible for maintaining account security.
 
-    3. Subscription & Payments
-    All subscriptions are non-refundable after 7 days of purchase.
-    Payment is processed securely via Razorpay.
+3. Subscription & Payments
+All subscriptions are non-refundable after 7 days.
 
-    4. Privacy
-    Your data is protected and not shared with third parties.
+4. Privacy
+Your data is protected and not shared with third parties.
 
-    5. Code of Conduct
-    Use the app responsibly and respectfully. Any misuse will result in account termination.
+5. Code of Conduct
+Use the app responsibly. Misuse results in termination.
 
-    6. Termination
-    We reserve the right to terminate accounts for violation of terms.
+6. Termination
+We reserve the right to terminate accounts.
 
-    7. Updates
-    Terms may be updated with prior notice to users.
+7. Updates
+Terms may be updated with prior notice.
 
-    8. Contact
-    For queries: +91 8950592855
-    """
+8. Contact
+For queries: +91 8950592855
+"""
 }
 
 PRIVACY_DATA = {
     'title': 'Privacy Policy',
     'content': """
-    1. Data Collection
-    We collect name, email, phone, and car details for app functionality.
+1. Data Collection
+We collect name, email, phone, and car details.
 
-    2. Data Usage
-    Data is used for queue management, payments, and communication.
+2. Data Usage
+Used for queue, payments, and communication.
 
-    3. Data Security
-    Your data is encrypted and stored securely in Supabase.
+3. Data Security
+Encrypted and stored securely.
 
-    4. No Sharing
-    We do not share your data with third parties without consent.
+4. No Sharing
+We do not share data with third parties.
 
-    5. User Rights
-    You can request data deletion anytime.
+5. User Rights
+You can request data deletion.
 
-    6. Cookies
-    We use cookies for session management.
+6. Cookies
+Used for session management.
 
-    7. Contact
-    For privacy concerns: +91 8950592855
-    """
+7. Contact
+For privacy: +91 8950592855
+"""
 }
 
 # ============================================
@@ -272,7 +222,7 @@ def payment_page():
     cur.execute('SELECT * FROM users WHERE id = %s', (session['user_id'],))
     user = cur.fetchone()
     conn.close()
-    return render_template('payment.html', user=user, terms=TERMS_DATA)
+    return render_template('payment.html', user=user)
 
 @app.route('/subscriptions')
 @login_required
@@ -282,7 +232,7 @@ def subscriptions_page():
     cur.execute('SELECT * FROM users WHERE id = %s', (session['user_id'],))
     user = cur.fetchone()
     conn.close()
-    return render_template('subscriptions.html', user=user, terms=TERMS_DATA)
+    return render_template('subscriptions.html', user=user)
 
 @app.route('/terms')
 def terms_page():
@@ -315,8 +265,8 @@ def admin_dashboard():
     cur.execute('SELECT COUNT(*) FROM users')
     total_users = cur.fetchone()[0]
     
-    cur.execute('SELECT COUNT(*) FROM transactions')
-    total_transactions = cur.fetchone()[0]
+    cur.execute('SELECT COUNT(*) FROM fillups')
+    total_fillups = cur.fetchone()[0]
     
     cur.execute('SELECT COUNT(*) FROM users WHERE is_vip = true')
     vip_users = cur.fetchone()[0]
@@ -331,7 +281,7 @@ def admin_dashboard():
     
     return render_template('admin_dashboard.html', 
         total_users=total_users,
-        total_transactions=total_transactions,
+        total_fillups=total_fillups,
         vip_users=vip_users,
         subscriptions=subscriptions,
         recent_users=recent_users
@@ -385,8 +335,7 @@ def register():
 
     session['user_id'] = user_id
     
-    # Send welcome WhatsApp
-    send_whatsapp(phone, f"Welcome to SKN APEX, {name}! You have successfully registered.")
+    send_whatsapp(phone, f"Welcome to SKN APEX, {name}!")
     
     return jsonify({
         'status': 'success',
@@ -495,7 +444,7 @@ def join_queue():
     credits = user['credits'] if user and user['credits'] else 0
     
     if credits <= 0:
-        return jsonify({'error': 'No credits available. Please purchase a subscription.'}), 400
+        return jsonify({'error': 'No credits. Please subscribe.'}), 400
     
     conn = get_db()
     cur = conn.cursor()
@@ -517,7 +466,7 @@ def join_queue():
     })
 
 # ============================================
-# SUBSCRIPTION WITH PAYMENT
+# SUBSCRIPTION (SIMPLE UPI - NO RAZORPAY)
 # ============================================
 
 PLANS = {
@@ -530,9 +479,9 @@ PLANS = {
 def get_plans():
     return jsonify(PLANS)
 
-@app.route('/api/create-order', methods=['POST'])
+@app.route('/api/subscription/subscribe', methods=['POST'])
 @login_required
-def create_order():
+def subscribe():
     data = request.get_json()
     plan_id = data.get('plan_id')
     
@@ -540,119 +489,48 @@ def create_order():
         return jsonify({'error': 'Invalid plan'}), 400
     
     plan = PLANS[plan_id]
-    amount = plan['price']
     
-    try:
-        order = razorpay_client.order.create({
-            'amount': amount * 100,  # Convert to paise
-            'currency': 'INR',
-            'payment_capture': 1,
-            'receipt': f'sub_{plan_id}_{session["user_id"]}_{int(datetime.now().timestamp())}'
-        })
-        
-        return jsonify({
-            'order_id': order['id'],
-            'amount': amount,
-            'currency': 'INR',
-            'plan_id': plan_id
-        })
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
-@app.route('/api/verify-payment', methods=['POST'])
-@login_required
-def verify_payment():
-    data = request.get_json()
-    plan_id = data.get('plan_id')
-    order_id = data.get('order_id')
-    payment_id = data.get('payment_id')
-    signature = data.get('signature')
+    conn = get_db()
+    cur = conn.cursor()
+    cur.execute('''
+        UPDATE users 
+        SET credits = credits + %s, 
+            subscription_type = %s,
+            subscription_end = %s,
+            is_vip = TRUE
+        WHERE id = %s
+        RETURNING credits, phone, name, car_number
+    ''', (plan['credits'], plan_id, (datetime.now() + timedelta(days=plan['days'])).date(), session['user_id']))
+    updated = cur.fetchone()
+    conn.commit()
+    conn.close()
     
-    try:
-        # Verify signature
-        razorpay_client.utility.verify_payment_signature({
-            'razorpay_order_id': order_id,
-            'razorpay_payment_id': payment_id,
-            'razorpay_signature': signature
-        })
-        
-        # Get plan
-        if plan_id not in PLANS:
-            return jsonify({'error': 'Invalid plan'}), 400
-        
-        plan = PLANS[plan_id]
-        
-        # Update user credits
-        conn = get_db()
-        cur = conn.cursor()
-        cur.execute('''
-            UPDATE users 
-            SET credits = credits + %s, 
-                subscription_type = %s,
-                subscription_end = %s,
-                is_vip = TRUE
-            WHERE id = %s
-            RETURNING credits, phone, name, car_number
-        ''', (plan['credits'], plan_id, (datetime.now() + timedelta(days=plan['days'])).date(), session['user_id']))
-        updated = cur.fetchone()
-        conn.commit()
-        conn.close()
-        
-        # Save transaction
-        conn = get_db()
-        cur = conn.cursor()
-        cur.execute('''
-            INSERT INTO transactions (user_id, amount, type, payment_id, status)
-            VALUES (%s, %s, %s, %s, %s)
-        ''', (session['user_id'], plan['price'], 'subscription', payment_id, 'completed'))
-        conn.commit()
-        conn.close()
-        
-        # Generate receipt
-        transaction_data = {
-            'car_number': updated['car_number'] if updated else 'N/A',
-            'amount': plan['price'],
-            'type': f'Subscription ({plan_id})',
-            'payment_id': payment_id,
-            'gst': round(plan['price'] * 0.18, 2),
-            'total': round(plan['price'] * 1.18, 2)
-        }
-        receipt_file, receipt_id = generate_receipt(transaction_data)
-        
-        # Send WhatsApp notification
-        phone = updated['phone'] if updated else ''
-        message = f"""
-        🎉 SKN APEX - Subscription Confirmed!
-        
-        ✅ Plan: {plan['name']}
-        ✅ Credits: {plan['credits']}
-        ✅ Amount: ₹{plan['price']}
-        ✅ Receipt #: {receipt_id}
-        
-        Thank you for choosing SKN APEX!
-        """
-        send_whatsapp(phone, message)
-        
-        return jsonify({
-            'status': 'success',
-            'credits': updated['credits'] if updated else 0,
-            'valid_until': (datetime.now() + timedelta(days=plan['days'])).isoformat(),
-            'receipt_id': receipt_id
-        })
-        
-    except Exception as e:
-        return jsonify({'error': str(e)}), 400
-
-@app.route('/api/payment/upi', methods=['GET'])
-@login_required
-def get_upi_info():
+    # Send WhatsApp notification
+    phone = updated['phone'] if updated else ''
+    message = f"🎉 SKN APEX Subscription Confirmed!\nPlan: {plan['name']}\nCredits: {plan['credits']}\nAmount: ₹{plan['price']}\nThank you!"
+    send_whatsapp(phone, message)
+    
     return jsonify({
-        'upi_id': 'skn-apex@okhdfc',
-        'qr_code_url': '/static/images/upi-qr.png'
+        'status': 'success',
+        'credits': updated['credits'] if updated else 0,
+        'valid_until': (datetime.now() + timedelta(days=plan['days'])).isoformat()
     })
 
+@app.route('/api/ai-assistant', methods=['GET'])
+@login_required
+def ai_assistant():
+    messages = [
+        "💡 Tip: Use your credits wisely! Each queue join uses 1 credit.",
+        "🚀 Upgrade to VIP for priority service!",
+        "📊 Track your fuel usage in your profile.",
+        "🎯 Set a daily goal and track your progress!",
+        "🔔 Enable notifications for real-time queue updates.",
+        "💎 Subscribe to monthly plan and save 50%!"
+    ]
+    return jsonify({'message': random.choice(messages)})
+
 # ============================================
-# ADMIN ROUTES
+# ADMIN & WORKER LOGIN
 # ============================================
 
 @app.route('/api/admin/login', methods=['POST'])
@@ -676,10 +554,7 @@ def admin_login():
         session['is_admin'] = True
         session['admin_id'] = admin_id
         
-        return jsonify({
-            'status': 'success',
-            'message': 'Admin login successful'
-        })
+        return jsonify({'status': 'success', 'message': 'Admin login successful'})
     except Exception as e:
         return jsonify({'error': 'Face verification failed'}), 401
 
@@ -701,19 +576,6 @@ def worker_login():
     
     session['worker_id'] = worker['id']
     return jsonify({'status': 'success', 'worker': dict(worker)})
-
-@app.route('/api/ai-assistant', methods=['GET'])
-@login_required
-def ai_assistant():
-    messages = [
-        "💡 Tip: Use your credits wisely! Each queue join uses 1 credit.",
-        "🚀 Upgrade to VIP for priority service and queue skipping!",
-        "📊 You can track your fuel usage in the profile section.",
-        "🎯 Set a daily goal and track your progress!",
-        "🔔 Enable notifications to get real-time queue updates.",
-        "💎 Subscribe to monthly plan and save 50% on fuel costs!"
-    ]
-    return jsonify({'message': random.choice(messages)})
 
 @app.route('/health')
 def health():
