@@ -779,3 +779,290 @@ body {
 .admin-btn {
     display: none; /* hide old one */
 }
+/* ============================================
+   PREMIUM CEO BADGE - Glassmorphism
+   ============================================ */
+
+.ceo-badge {
+    position: fixed;
+    top: 15px;
+    right: 15px;
+    z-index: 9999;
+    cursor: pointer;
+}
+
+.ceo-badge-inner {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    padding: 6px 12px 6px 6px;
+    border-radius: 50px;
+    border: 1.5px solid rgba(255, 215, 0, 0.4);
+    box-shadow: 0 4px 24px rgba(255, 215, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.ceo-badge-inner:hover {
+    transform: scale(1.04);
+    border-color: rgba(255, 215, 0, 0.7);
+    box-shadow: 0 8px 40px rgba(255, 215, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+.ceo-icon {
+    font-size: 1.2rem;
+    margin-left: 4px;
+    opacity: 0.8;
+}
+
+.ceo-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #FFD700;
+    box-shadow: 0 0 12px rgba(255, 215, 0, 0.2);
+    transition: all 0.3s ease;
+}
+
+.ceo-badge-inner:hover .ceo-avatar {
+    border-color: #FFF;
+    box-shadow: 0 0 24px rgba(255, 215, 0, 0.4);
+}
+
+.ceo-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #FFD700;
+    letter-spacing: 0.5px;
+    padding-right: 4px;
+    text-shadow: 0 0 12px rgba(255, 215, 0, 0.2);
+}
+
+/* ============================================
+   PREMIUM WEBAPP LOGO - Circular with Ring
+   ============================================ */
+
+.logo-container {
+    position: relative;
+    display: inline-block;
+}
+
+.logo-ring {
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    padding: 6px;
+    background: conic-gradient(from 0deg, #FFD700, #FF6B00, #FFD700);
+    animation: logoSpin 10s linear infinite;
+    box-shadow: 0 0 60px rgba(255, 215, 0, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.logo-ring img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    background: #0a0a1a;
+    border: 4px solid #0a0a1a;
+}
+
+@keyframes logoSpin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.webapp-logo {
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(255, 215, 0, 0.2);
+    box-shadow: 0 0 40px rgba(255, 215, 0, 0.1);
+    transition: all 0.4s ease;
+}
+
+.webapp-logo:hover {
+    transform: scale(1.02);
+    box-shadow: 0 0 60px rgba(255, 215, 0, 0.2);
+}
+
+.logo-glow {
+    position: absolute;
+    top: -30px;
+    left: -30px;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 215, 0, 0.08), transparent 70%);
+    animation: glowPulse 3s ease-in-out infinite;
+    z-index: -1;
+}
+
+/* ============================================
+   PREMIUM HEADER / NAVBAR
+   ============================================ */
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    margin-bottom: 24px;
+    background: rgba(10, 10, 26, 0.4);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    border-radius: 16px;
+    padding: 12px 20px;
+    border: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.nav-brand {
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: #FFD700;
+    letter-spacing: 0.5px;
+    text-shadow: 0 0 20px rgba(255, 215, 0, 0.1);
+}
+
+.nav-links a {
+    color: #aaa;
+    text-decoration: none;
+    margin-left: 18px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    padding: 4px 8px;
+    border-radius: 8px;
+    position: relative;
+}
+
+.nav-links a::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background: #FFD700;
+    transition: all 0.3s ease;
+    transform: translateX(-50%);
+}
+
+.nav-links a:hover {
+    color: #FFD700;
+}
+
+.nav-links a:hover::after {
+    width: 70%;
+}
+
+/* ============================================
+   PREMIUM MODAL (CEO) - Enhanced
+   ============================================ */
+
+.ceo-modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    z-index: 10000;
+    justify-content: center;
+    align-items: center;
+}
+
+.ceo-modal-content {
+    background: linear-gradient(145deg, #1a1a2e, #12121f);
+    border-radius: 28px;
+    padding: 32px 28px;
+    max-width: 380px;
+    width: 90%;
+    text-align: center;
+    border: 1px solid rgba(255, 215, 0, 0.15);
+    box-shadow: 0 0 80px rgba(255, 215, 0, 0.08);
+    animation: modalSlideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes modalSlideIn {
+    0% { opacity: 0; transform: translateY(20px) scale(0.96); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.ceo-modal-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #FFD700;
+    box-shadow: 0 0 40px rgba(255, 215, 0, 0.15);
+    margin-bottom: 12px;
+}
+
+.ceo-modal-header h2 {
+    font-size: 1.8rem;
+    background: linear-gradient(135deg, #FFD700, #FF8C00);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin: 4px 0;
+}
+
+.ceo-title {
+    color: #FFD700;
+    font-weight: 600;
+    font-size: 0.8rem;
+    letter-spacing: 2px;
+    margin-bottom: 16px;
+}
+
+.ceo-modal-body p {
+    color: #ccc;
+    font-size: 0.95rem;
+    margin: 8px 0;
+}
+
+.whatsapp-btn {
+    display: inline-block;
+    margin-top: 14px;
+    background: #25D366;
+    color: #fff;
+    padding: 12px 24px;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.95rem;
+    box-shadow: 0 0 30px rgba(37, 211, 102, 0.25);
+    transition: all 0.3s ease;
+}
+
+.whatsapp-btn:hover {
+    transform: scale(1.04);
+    box-shadow: 0 0 50px rgba(37, 211, 102, 0.4);
+}
+
+.close-btn {
+    margin-top: 14px;
+    background: transparent;
+    border: 1px solid #444;
+    color: #aaa;
+    padding: 8px 28px;
+    border-radius: 50px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: all 0.3s ease;
+}
+
+.close-btn:hover {
+    border-color: #FFD700;
+    color: #FFD700;
+}
