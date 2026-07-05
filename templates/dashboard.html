@@ -5,7 +5,7 @@
     <div class="dashboard-header">
         <div>
             <h1>Welcome, {{ user.name }}!</h1>
-            <p class="subtitle" style="color:#888; font-size:0.85rem;">{{ user.car_number }}</p>
+            <p style="color:#888; font-size:0.85rem;">{{ user.car_number }}</p>
         </div>
         <div class="star-rating" id="starDisplay"></div>
     </div>
@@ -39,20 +39,28 @@
         <p style="color:#FFD700;">💎 Get VIP treatment! <a href="/subscriptions" style="color:#fff; font-weight:700;">Subscribe now</a></p>
     </div>
 
+    <!-- AI Assistant -->
+    <div style="margin-top: 16px; background: linear-gradient(135deg, rgba(255,215,0,0.08), rgba(255,215,0,0.02)); border-radius: 12px; padding: 14px; border: 1px solid rgba(255,215,0,0.15);">
+        <p style="display:flex; align-items:center; gap:8px; color:#FFD700; font-size:0.85rem; margin-bottom:4px;">
+            🤖 <strong>AI Assistant:</strong>
+        </p>
+        <p id="aiMessage" style="color:#ccc; font-size:0.9rem; margin-left:28px; font-style:italic;">
+            Loading your personalized tip...
+        </p>
+        <button onclick="refreshAI()" style="background:transparent; border:1px solid rgba(255,215,0,0.2); color:#aaa; border-radius:6px; padding:4px 12px; font-size:0.7rem; cursor:pointer; margin-top:4px; margin-left:28px;">
+            🔄 New Tip
+        </button>
+    </div>
+
     <!-- Live Updates -->
-    <div class="live-updates" style="margin-top: 16px; background: rgba(255,255,255,0.03); border-radius: 12px; padding: 14px; border: 1px solid rgba(255,255,255,0.05);">
-        <h3 style="font-size:0.9rem; color:#aaa; margin-bottom:8px;">📡 Live Updates</h3>
+    <div style="margin-top: 12px; background: rgba(255,255,255,0.03); border-radius: 12px; padding: 14px; border: 1px solid rgba(255,255,255,0.05);">
+        <h3 style="font-size:0.85rem; color:#aaa; margin-bottom:8px;">📡 Live Updates</h3>
         <div style="display:flex; flex-direction:column; gap:4px; font-size:0.8rem; color:#888;">
             <p>💧 Water: Normal supply today</p>
             <p>⛽ DG Fuel: 60% (Healthy)</p>
             <p>🔌 Electricity: Stable</p>
             <p>📢 Festival offer: 10% off on Sunday</p>
         </div>
-    </div>
-
-    <!-- AI Assistant -->
-    <div style="margin-top: 16px; background: rgba(255,215,0,0.05); border-radius: 12px; padding: 14px; border: 1px solid rgba(255,215,0,0.1);">
-        <p style="color:#FFD700; font-size:0.85rem;">🤖 <strong>AI Assistant:</strong> <span id="aiMessage">Ready to fuel up? You have {{ user.credits or 0 }} credits!</span></p>
     </div>
 </div>
 
@@ -77,13 +85,20 @@ document.addEventListener('DOMContentLoaded', async function() {
         if (!data.subscription_type) {
             document.getElementById('subscriptionBanner').style.display = 'block';
         }
-        // Update AI message based on credits
-        if (data.credits > 0) {
-            document.getElementById('aiMessage').textContent = `You have ${data.credits} credits! Ready to fuel up? 🚀`;
-        } else {
-            document.getElementById('aiMessage').textContent = 'You have 0 credits. Subscribe to get priority service! 💎';
-        }
     } catch(e) {}
+
+    // Load AI message
+    await refreshAI();
 });
+
+async function refreshAI() {
+    try {
+        const response = await fetch('/api/ai-assistant');
+        const data = await response.json();
+        document.getElementById('aiMessage').textContent = data.message;
+    } catch(e) {
+        document.getElementById('aiMessage').textContent = '💡 Stay tuned for smart tips!';
+    }
+}
 </script>
 {% endblock %}
