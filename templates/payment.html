@@ -2,12 +2,17 @@
 
 {% block content %}
 <div class="payment-container">
-    <h1>💳 Pay Now</h1>
+    <h1 style="font-size:1.4rem; margin-bottom:4px;">💳 Pay Now</h1>
+    <p style="color:#888; font-size:0.85rem; margin-bottom:16px;">Scan and pay via UPI</p>
+
+    <div id="errorMessage" style="color:#ff4444; text-align:center; display:none; margin-bottom:10px;"></div>
+    <div id="successMessage" style="color:#00ff64; text-align:center; display:none; margin-bottom:10px;"></div>
 
     <div class="payment-box">
         <div class="payment-summary">
-            <p><strong>Car Number:</strong> {{ user.car_number }}</p>
-            <p><strong>Current Price:</strong> ₹83/kg</p>
+            <p><strong>Car:</strong> {{ user.car_number }}</p>
+            <p><strong>Model:</strong> {{ user.car_model or 'Not specified' }}</p>
+            <p><strong>Price:</strong> ₹83/kg</p>
         </div>
 
         <div class="form-group">
@@ -16,29 +21,29 @@
         </div>
 
         <div class="payment-result">
-            <p><strong>Total Amount:</strong> ₹<span id="totalAmount">705.50</span></p>
+            <p>💰 Total: ₹<span id="totalAmount">705.50</span></p>
         </div>
 
         <div class="payment-methods">
-            <button onclick="payOnline()" class="btn-primary">Pay Online</button>
-            <button onclick="payCash()" class="btn-secondary">Cash at Pump</button>
+            <button onclick="payOnline()" class="btn-primary">📱 Pay Online</button>
+            <button onclick="payCash()" class="btn-secondary">💰 Cash at Pump</button>
         </div>
 
-        <div id="qrContainer" style="margin-top: 20px; text-align: center;">
-            <p>📱 Scan to Pay via UPI</p>
-            <img src="/static/images/upi-qr.png" alt="UPI QR Code" id="qrImage" style="max-width: 200px; border-radius: 12px; margin-top: 8px;">
-            <p style="color: #888; font-size: 0.8rem; margin-top: 6px;">Scan with GPay, PhonePe, or Paytm</p>
+        <!-- UPI QR Code -->
+        <div id="qrContainer" style="margin-top: 20px; text-align: center; padding: 16px; background: rgba(255,255,255,0.03); border-radius: 12px; border: 1px solid rgba(255,215,0,0.1);">
+            <p style="color:#FFD700; font-weight:600; margin-bottom:8px;">📱 Scan to Pay via UPI</p>
+            <img src="/static/images/upi-qr.png" alt="UPI QR Code" id="qrImage" style="max-width: 200px; border-radius: 12px; border: 2px solid #FFD700;">
+            <p style="color:#888; font-size:0.75rem; margin-top:6px;">Scan with GPay, PhonePe, or Paytm</p>
+            <p style="color:#aaa; font-size:0.7rem;">UPI ID: <strong style="color:#FFD700;">skn-apex@okhdfc</strong></p>
+        </div>
+
+        <div style="margin-top:12px; padding:10px; background:rgba(255,215,0,0.05); border-radius:8px; border:1px solid rgba(255,215,0,0.1);">
+            <p style="color:#888; font-size:0.65rem;">📋 By paying, you agree to our <a href="/terms" target="_blank" style="color:#FFD700;">Terms & Conditions</a></p>
         </div>
     </div>
 </div>
 
 <script>
-const token = localStorage.getItem('token');
-
-if (!token) {
-    window.location.href = '/login';
-}
-
 document.getElementById('quantity').addEventListener('input', function() {
     const total = this.value * 83;
     document.getElementById('totalAmount').textContent = total.toFixed(2);
@@ -47,11 +52,23 @@ document.getElementById('quantity').addEventListener('input', function() {
 function payOnline() {
     const quantity = document.getElementById('quantity').value;
     const amount = (quantity * 83).toFixed(2);
-    alert('📱 Please scan the UPI QR code above and pay ₹' + amount);
+    const errorDiv = document.getElementById('errorMessage');
+    const successDiv = document.getElementById('successMessage');
+    errorDiv.style.display = 'none';
+    successDiv.style.display = 'none';
+    
+    // Show terms popup
+    if (confirm('📋 Please confirm you have read the Terms & Conditions.\n\nAmount: ₹' + amount + '\n\nClick OK to proceed with payment.')) {
+        alert('📱 Please scan the UPI QR code above and pay ₹' + amount + '\n\nUPI ID: skn-apex@okhdfc\n\n✅ After payment, your credits will update automatically.');
+        successDiv.textContent = '✅ Payment initiated. Your credits will update after confirmation.';
+        successDiv.style.display = 'block';
+    }
 }
 
 function payCash() {
-    alert('💰 Pay at the pump. You will receive a receipt.');
+    const quantity = document.getElementById('quantity').value;
+    const amount = (quantity * 83).toFixed(2);
+    alert('💰 Pay ₹' + amount + ' at the pump.\n\nYou will receive a receipt.');
 }
 </script>
 {% endblock %}
