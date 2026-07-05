@@ -752,3 +752,30 @@ body {
         grid-template-columns: 1fr 1fr;
     }
 }
+/* Admin Button - Top Left */
+.admin-btn-top-left {
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    z-index: 9998;
+    background: rgba(255, 215, 0, 0.08);
+    border: 1px solid rgba(255, 215, 0, 0.15);
+    color: #FFD700;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.65rem;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    letter-spacing: 0.5px;
+}
+.admin-btn-top-left:hover {
+    background: rgba(255, 215, 0, 0.15);
+    border-color: rgba(255, 215, 0, 0.4);
+    transform: scale(1.05);
+}
+.admin-btn {
+    display: none; /* hide old one */
+}
