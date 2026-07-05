@@ -5,6 +5,8 @@
     <h1 style="font-size:1.4rem; margin-bottom:4px;">💎 Subscription Plans</h1>
     <p style="color:#888; font-size:0.85rem; margin-bottom:16px;">Save up to 62% on your fuel bill!</p>
 
+    <div id="errorMessage" style="color:#ff4444; text-align:center; display:none; margin-bottom:10px;"></div>
+
     <div class="plans-grid">
         <div class="plan-card">
             <h3>Weekly</h3>
@@ -53,27 +55,89 @@
     <div style="margin-top:16px; background:rgba(255,215,0,0.05); border-radius:12px; padding:12px; border:1px solid rgba(255,215,0,0.1); text-align:center;">
         <p style="color:#888; font-size:0.75rem;">📋 All subscriptions come with a 30-day money-back guarantee</p>
         <p style="color:#aaa; font-size:0.7rem;">Your credits will be added immediately after payment</p>
+        <p style="color:#555; font-size:0.6rem;">GST 18% included</p>
+        <a href="/terms" target="_blank" style="color:#FFD700; font-size:0.7rem;">View Terms & Conditions</a>
     </div>
 </div>
 
 <script>
+const RAZORPAY_KEY = 'YOUR_RAZORPAY_KEY_ID'; // Replace with your key
+
 async function subscribe(planId) {
+    const errorDiv = document.getElementById('errorMessage');
+    errorDiv.style.display = 'none';
+
     try {
-        const response = await fetch('/api/subscription/subscribe', {
+        // Step 1: Create order
+        const orderResponse = await fetch('/api/create-order', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({ plan_id: planId })
         });
-        const result = await response.json();
+        const orderData = await orderResponse.json();
 
-        if (result.status === 'success') {
-            alert('✅ Subscription activated! You have ' + result.credits + ' credits.');
-            window.location.href = '/dashboard';
-        } else {
-            alert(result.error || 'Subscription failed');
+        if (orderData.error) {
+            errorDiv.textContent = orderData.error;
+            errorDiv.style.display = 'block';
+            return;
         }
+
+        // Step 2: Open Razorpay
+        const options = {
+            key: RAZORPAY_KEY,
+            amount: orderData.amount * 100,
+            currency: 'INR',
+            name: 'SKN APEX',
+            description: `${planId} Subscription Plan`,
+            order_id: orderData.order_id,
+            prefill: {
+                name: '{{ user.name }}',
+                email: '{{ user.email }}',
+                contact: '{{ user.phone }}'
+            },
+            theme: {
+                color: '#FFD700'
+            },
+            modal: {
+                ondismiss: function() {
+                    // User closed the payment popup
+                }
+            },
+            handler: async function(response) {
+                // Step 3: Verify payment
+                try {
+                    const verifyResponse = await fetch('/api/verify-payment', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({
+                            plan_id: planId,
+                            order_id: response.razorpay_order_id,
+                            payment_id: response.razorpay_payment_id,
+                            signature: response.razorpay_signature
+                        })
+                    });
+                    const verifyData = await verifyResponse.json();
+
+                    if (verifyData.status === 'success') {
+                        // ✅ Payment successful!
+                        alert('✅ Subscription activated! You have ' + verifyData.credits + ' credits.\nReceipt: ' + verifyData.receipt_id);
+                        // Update dashboard
+                        window.location.href = '/dashboard';
+                    } else {
+                        alert('❌ Payment verification failed: ' + verifyData.error);
+                    }
+                } catch (error) {
+                    alert('❌ Verification error: ' + error.message);
+                }
+            }
+        };
+
+        const rzp = new Razorpay(options);
+        rzp.open();
+
     } catch (error) {
-        alert('Network error. Please try again.');
+        errorDiv.textContent = 'Error: ' + error.message;
+        errorDiv.style.display = 'block';
     }
 }
 </script>
