@@ -13,7 +13,7 @@
         <p class="welcome-tagline">⚡ Fuel at Its Peak ⚡</p>
         <p class="welcome-sub">Smart Fuel Management • Live Queue • Priority Service</p>
 
-        <!-- Animated Stats -->
+        <!-- Stats -->
         <div class="welcome-stats">
             <div class="stat-item">
                 <span class="stat-number" id="statCars">0</span>
@@ -60,20 +60,19 @@
         </div>
     </div>
 
-    <!-- Footer Links for Worker & Admin -->
-    <div class="welcome-footer" style="margin-top: 30px; padding: 16px 0; border-top: 1px solid rgba(255,255,255,0.05); text-align: center; font-size: 0.75rem;">
-        <a href="/worker-login" style="color: #00bfff; margin: 0 10px; text-decoration: none; font-weight: 500;">👨‍🔧 Worker Login</a>
-        <span style="color: #333;">|</span>
-        <a href="/admin-login" style="color: #FFD700; margin: 0 10px; text-decoration: none; font-weight: 500;">🔐 Admin</a>
-        <span style="color: #333;">|</span>
-        <a href="/terms" style="color: #888; margin: 0 10px; text-decoration: none;">Terms</a>
-        <span style="color: #333;">|</span>
-        <a href="/privacy" style="color: #888; margin: 0 10px; text-decoration: none;">Privacy</a>
+    <!-- Footer Links -->
+    <div class="welcome-footer">
+        <a href="/worker-login">👨‍🔧 Worker Login</a>
+        <span>|</span>
+        <a href="/admin-login">🔐 Admin</a>
+        <span>|</span>
+        <a href="/terms">Terms</a>
+        <span>|</span>
+        <a href="/privacy">Privacy</a>
     </div>
 </div>
 
 <script>
-    // Animated counter
     function animateCounter(el, target, duration) {
         let current = 0;
         const step = Math.ceil(target / (duration / 16));
@@ -86,7 +85,6 @@
             el.textContent = current + '+';
         }, 16);
     }
-
     document.addEventListener('DOMContentLoaded', function() {
         animateCounter(document.getElementById('statCars'), 500, 2000);
         animateCounter(document.getElementById('statSocieties'), 10, 1500);
@@ -97,19 +95,22 @@
     .welcome-container {
         padding: 10px 0;
         text-align: center;
+        background: radial-gradient(ellipse at center, #0f0f2a 0%, #0a0a1a 100%);
+        border-radius: 20px;
+        min-height: 80vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
     }
-
     .welcome-hero {
         padding: 20px 20px 30px;
         position: relative;
         overflow: hidden;
     }
-
     .logo-container {
         position: relative;
         display: inline-block;
     }
-
     .webapp-logo {
         width: 130px;
         height: 130px;
@@ -121,7 +122,6 @@
         position: relative;
         z-index: 2;
     }
-
     .logo-glow {
         position: absolute;
         top: -20px;
@@ -133,17 +133,14 @@
         animation: glowPulse 2s ease-in-out infinite;
         z-index: 1;
     }
-
     @keyframes logoFloat {
         0%, 100% { transform: translateY(0); }
         50% { transform: translateY(-12px); }
     }
-
     @keyframes glowPulse {
         0%, 100% { transform: scale(1); opacity: 0.7; }
         50% { transform: scale(1.2); opacity: 1; }
     }
-
     .welcome-title {
         font-size: 3.4rem;
         background: linear-gradient(135deg, #FFD700, #FFA500, #FFD700);
@@ -155,13 +152,11 @@
         letter-spacing: 2px;
         animation: titleShine 3s ease-in-out infinite;
     }
-
     @keyframes titleShine {
         0% { background-position: 0% 50%; }
         50% { background-position: 100% 50%; }
         100% { background-position: 0% 50%; }
     }
-
     .welcome-tagline {
         font-size: 1.2rem;
         color: #FFD700;
@@ -169,38 +164,32 @@
         margin: 4px 0;
         letter-spacing: 3px;
     }
-
     .welcome-sub {
         color: #aaa;
         font-size: 0.9rem;
         margin-top: 4px;
         letter-spacing: 1px;
     }
-
     .welcome-stats {
         display: flex;
         justify-content: center;
         gap: 40px;
         margin: 30px 0;
     }
-
     .stat-item {
         text-align: center;
     }
-
     .stat-number {
         display: block;
         font-size: 2rem;
         font-weight: 800;
         color: #FFD700;
     }
-
     .stat-label {
         font-size: 0.75rem;
         color: #888;
         letter-spacing: 1px;
     }
-
     .welcome-actions {
         display: flex;
         gap: 14px;
@@ -208,7 +197,6 @@
         margin-top: 20px;
         flex-wrap: wrap;
     }
-
     .welcome-actions .btn-primary,
     .welcome-actions .btn-secondary {
         padding: 16px 36px;
@@ -219,34 +207,28 @@
         display: inline-block;
         transition: all 0.3s ease;
     }
-
     .welcome-actions .btn-primary {
         background: linear-gradient(135deg, #FFD700, #F4A900);
         color: #0a0a1a;
         box-shadow: 0 0 30px rgba(255, 215, 0, 0.3);
     }
-
     .welcome-actions .btn-secondary {
         background: transparent;
         color: #FFD700;
         border: 2px solid #FFD700;
     }
-
     .welcome-actions .btn-primary:hover,
     .welcome-actions .btn-secondary:hover {
         transform: scale(1.05);
     }
-
     .welcome-features {
         margin-top: 30px;
     }
-
     .feature-grid {
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 12px;
     }
-
     .feature-card {
         background: rgba(255, 215, 0, 0.05);
         border: 1px solid rgba(255, 215, 0, 0.1);
@@ -256,35 +238,45 @@
         transition: all 0.3s ease;
         cursor: pointer;
     }
-
     .feature-card:hover {
         transform: translateY(-5px);
         border-color: rgba(255, 215, 0, 0.4);
         box-shadow: 0 0 40px rgba(255, 215, 0, 0.08);
     }
-
     .feature-icon {
         font-size: 2.2rem;
         display: block;
     }
-
     .feature-card h3 {
         font-size: 0.95rem;
         color: #FFD700;
         margin: 6px 0 2px;
         font-weight: 700;
     }
-
     .feature-card p {
         font-size: 0.75rem;
         color: #888;
         margin: 0;
     }
-
-    .welcome-footer a:hover {
-        text-decoration: underline !important;
+    .welcome-footer {
+        margin-top: 30px;
+        padding: 16px 0;
+        border-top: 1px solid rgba(255,255,255,0.05);
+        text-align: center;
+        font-size: 0.75rem;
     }
-
+    .welcome-footer a {
+        color: #888;
+        margin: 0 10px;
+        text-decoration: none;
+        font-weight: 500;
+    }
+    .welcome-footer a:hover {
+        color: #FFD700;
+    }
+    .welcome-footer span {
+        color: #333;
+    }
     @media (max-width: 400px) {
         .welcome-title {
             font-size: 2.4rem;
@@ -309,7 +301,7 @@
             font-size: 0.65rem;
         }
         .welcome-footer a {
-            margin: 0 5px !important;
+            margin: 0 5px;
         }
     }
 </style>
