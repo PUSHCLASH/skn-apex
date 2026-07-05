@@ -9,7 +9,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 </head>
 <body>
-    <!-- CEO Badge -->
+    <!-- Admin Button - TOP LEFT -->
+    <a href="/admin-login" class="admin-btn-top-left">🔐 Admin</a>
+
+    <!-- CEO Badge - TOP RIGHT -->
     <div class="ceo-badge" onclick="openCEOModal()">
         <img src="/static/images/ceo-logo.png" alt="CEO" class="ceo-avatar">
         <span class="ceo-label">CEO of App</span>
@@ -34,9 +37,6 @@
         </div>
     </div>
 
-    <!-- Admin Button -->
-    <a href="/admin-login" class="admin-btn">🔐 Admin</a>
-
     <!-- Main App Container -->
     <div class="app-container">
         <nav class="navbar">
@@ -57,15 +57,12 @@
         function openCEOModal() {
             document.getElementById('ceoModal').style.display = 'flex';
         }
-
         function closeCEOModal() {
             document.getElementById('ceoModal').style.display = 'none';
         }
-
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') closeCEOModal();
         });
-
         console.log('✅ SKN APEX loaded');
     </script>
 </body>
